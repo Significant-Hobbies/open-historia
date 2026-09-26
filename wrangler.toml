@@ -29,5 +29,5 @@ BETTER_AUTH_URL = "https://historia.aliveville.com"
 [[d1_databases]]
 binding = "DB"
 database_name = "open-historia"
-database_id = "9f68ece6-eee9-4faf-86aa-55c91b2b7936"
+database_id = "69c7c845-1cc5-4b39-9d8d-81cae7b35bad"
 migrations_dir = "drizzle"
