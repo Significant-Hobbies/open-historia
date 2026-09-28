@@ -80,6 +80,32 @@ const structuredData = JSON.stringify({
   <body class="antialiased">
     <slot />
     <script
+      defer
+      src="https://health.sassmaker.com/tracker.js"
+      data-key="ahk_pub_777a53ea690ece7f6afd111feef9f4e46147f0d01dbc672b933e2bf26ea3d0ec"
+      data-project="app-import-b1df0f87e3d580f56c9d26925ca67db81bd08e63d6f1881ae01a6462d6177fd9"
+      data-identity="persistent"
+      data-endpoint="https://ingest.sassmaker.com/v1/browser"
+    ></script>
+    <script is:inline>
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const tracked = target.closest('[data-app-health-event]');
+        const name = tracked?.getAttribute('data-app-health-event');
+        if (name && typeof window.appHealth?.track === 'function') window.appHealth.track(name);
+      });
+    </script>
+    <saas-maker-newsletter-capture
+      product-name="Open Historia"
+      catalog-id="open-historia"
+      kind="newsletter"
+      source="footer"
+      privacy-url="https://historia.aliveville.com/privacy"
+      theme="dark"
+    ></saas-maker-newsletter-capture>
+    <script type="module" src="https://sassmaker.com/newsletter-capture.js"></script>
+    <script
       is:inline
       src="https://sassmaker.com/project-strip.js"
       data-project="open-historia"

@@ -105,11 +105,11 @@ Until step 1 ships, `pnpm deploy` will publish to
   `opengraph-image.tsx` file convention. The Astro layout points
   `og:image` at `${SITE_URL}/opengraph-image`; post-cutover the
   Worker still owns that path, so the URL keeps resolving.
-- **No PostHog / analytics** — the Worker mounts an analytics
-  provider in `app/layout.tsx`. The static landing skips it. Add via
-  an Astro layout `<script>` if upper-funnel attribution matters.
-- **No client JS** — no React, no hydration, no `useRouter().push()`.
-  The single CTA is a plain `<a href="/play">`.
+- **Analytics** — the landing uses the origin-bound App Health browser
+  tracker for page views and named CTA events. The `/play` links remain
+  ordinary anchors; event tracking does not intercept navigation.
+- **Client JS** — no React or hydration. A small click listener tracks
+  marked links, while the SaaS Maker capture element loads independently.
 
 ## Notes
 
