@@ -7,7 +7,7 @@ export default function PrivacyPage() {
         ← Open Historia
       </Link>
       <h1 className="mt-3 text-3xl font-bold tracking-tight text-amber-400">Privacy</h1>
-      <p className="mt-4 text-xs text-slate-500">Last updated: 2026-09-28.</p>
+      <p className="mt-4 text-xs text-slate-500">Last updated: 2026-09-29.</p>
 
       <h2 className="mt-8 text-base font-semibold text-amber-500">What we store</h2>
       <ul className="mt-2 list-disc space-y-1 pl-5">
@@ -19,6 +19,12 @@ export default function PrivacyPage() {
           browser/device/country categories, and a project-scoped visitor identifier held in
           first-party local storage for up to 90 days. The tracker does not store raw IP addresses
           or user-agent strings and does not set analytics cookies.
+        </li>
+        <li>
+          When server endpoint monitoring is enabled, API requests send their method, normalized
+          route template, response status, duration, and declared response byte count to App Health.
+          Request bodies, headers, query values, concrete route parameters, and identity are not
+          included.
         </li>
       </ul>
 

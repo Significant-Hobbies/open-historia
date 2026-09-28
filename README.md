@@ -18,6 +18,16 @@ Open Historia is a unique strategy game where you command nations using natural 
 
 Rate limiting on AI routes is an in-memory sliding-window limiter (`lib/rate-limit.ts`).
 
+### Optional API endpoint monitoring
+
+The Hono `/api/*` routes can send privacy-bounded endpoint measurements to App Health when the
+`APP_HEALTH_INGEST_KEY` Worker secret is configured. Set `APP_HEALTH_ENVIRONMENT` to route the
+measurements to a non-production environment; it defaults to `production`. Without the key, the
+middleware is a no-op. Measurements use matched route templates and contain method, status,
+duration, and declared response byte count; request contents, headers, query values, concrete path
+parameters, and identity are excluded. This integration does not enable browser tracking or
+application logs.
+
 ---
 
 ## Problem

@@ -14,5 +14,7 @@ export type WorkerEnv = {
   LOCAL_AI_URL?: string;
   CLI_BRIDGE_URL?: string;
   NODE_ENV?: string;
+  APP_HEALTH_INGEST_KEY?: string;
+  APP_HEALTH_ENVIRONMENT?: string;
   ASSETS: Fetcher;
 };

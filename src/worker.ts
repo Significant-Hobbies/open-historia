@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { createAuth } from '../lib/auth';
 import type { WorkerEnv } from '../lib/worker-env';
 
+import { createAppHealthMiddleware } from './worker/app-health';
 import { bindWorkerEnv } from './worker/bind-env';
 import llmRoutes from './worker/routes/llm';
 import savesRoutes from './worker/routes/saves';
@@ -78,6 +79,8 @@ api.use('*', async (c, next) => {
   bindWorkerEnv(c.env);
   await next();
 });
+
+api.use('*', createAppHealthMiddleware());
 
 api.on(['GET', 'POST'], '/api/auth/*', (c) => {
   const auth = createAuth(c.env);
