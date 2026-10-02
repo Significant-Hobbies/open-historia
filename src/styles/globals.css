@@ -61,6 +61,19 @@ body {
   background: rgba(217, 119, 6, 0.4);
 }
 
+/* Preserve the sample's title and action while giving the preset list room on
+   short viewports. The full historical thread remains available on tall screens. */
+@media (max-height: 960px) {
+  .sample-timeline-card {
+    padding-block: 0.75rem;
+  }
+
+  .sample-timeline-steps,
+  .sample-timeline-source {
+    display: none;
+  }
+}
+
 /* Selection */
 ::selection {
   background: rgba(217, 119, 6, 0.25);
