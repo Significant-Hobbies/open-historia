@@ -17,7 +17,7 @@ Interactive historical timeline and storytelling platform.
 
 Open Historia is an AI-powered grand strategy game where players issue natural-language commands and AI adjudicates outcomes, nation behavior, diplomacy, and emergent historical narratives.
 
-Open Historia Rewrite history through AI-powered grand strategy. Open Historia is a unique strategy game where you command nations using natural language. Issue orders like "Invade West Coast" or "Negotiate trade with Japan", and watch as AI adjudicates outcomes, drives independent nation behavior, and creates emergent narratives spanning from ancient empires to speculative futures. --- Deployment & External Services Concern Service --------- --------- Hosting Cloudflare Workers open-historia via @opennextjs/cloudflare Database Turso libSQL via Drizzle ORM Auth better-auth + Google OAuth AI free-ai-gateway Workers AI chokepoint ; Anthropic, OpenAI & Google Gemini APIs supported CI/CD GitHub 
+Open Historia Rewrite history through AI-powered grand strategy. Open Historia is a unique strategy game where you command nations using natural language. Issue orders like "Invade West Coast" or "Negotiate trade with Japan", and watch as AI adjudicates outcomes, drives independent nation behavior, and creates emergent narratives spanning from ancient empires to speculative futures. --- Deployment & External Services Concern Service --------- --------- Hosting Cloudflare Workers open-historia via @opennextjs/cloudflare Database Turso libSQL via Drizzle ORM Auth better-auth + Google OAuth AI free-ai-gateway routes managed requests to available providers; Anthropic, OpenAI & Google Gemini APIs remain supported via explicit configuration CI/CD GitHub
 
 ## Feature Map
 

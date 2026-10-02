@@ -4,6 +4,17 @@
 
 Last updated: 2026-09-09
 
+## Free AI gateway source update — 2 October
+
+Managed `free-ai` generation now calls the Fleet gateway with canonical
+`open-historia` attribution. Existing explicit provider choices remain intact;
+production fails closed if the binding is absent, and the existing structured
+output validation, timeout and output bound are preserved. Real SDK tests cover
+JSON mode, SSE passthrough, `/turn`, `/chat`, `/advisor`, and missing-binding
+behavior. Typecheck, lint, 102 tests, Cloudflare build, and Wrangler top-level
+dry-run pass. Pending PR review and release; no deployment was performed.
+Tracked in [Free AI issue #83](https://github.com/sass-maker/free-ai/issues/83).
+
 ## Why/What
 
 **Sub-product of [ai-game](../ai-game)** (the fleet's AI-game research umbrella). Separate repo and deploy, worked on together with ai-game as one research effort.
@@ -22,7 +33,7 @@ Last updated: 2026-09-09
 - **Map:** MapLibre GL JS + Natural Earth / world-atlas TopoJSON.
 - **DB:** Cloudflare D1 + Drizzle — cloud saves.
 - **Auth:** better-auth + Google OAuth (optional).
-- **AI:** free-ai-gateway chokepoint; Anthropic, OpenAI, Gemini, DeepSeek; in-memory rate limiting on AI routes (`lib/rate-limit.ts`).
+- **AI:** Managed inference routes through free-ai-gateway; explicit Anthropic, OpenAI, Gemini, and DeepSeek providers remain available; in-memory rate limiting on AI routes (`lib/rate-limit.ts`).
 - **Offline saves:** Browser localStorage works without auth. Cloud saves require the D1 binding and Google OAuth configuration.
 - **Repository:** github.com/sarthak-fleet/open-historia.
 
