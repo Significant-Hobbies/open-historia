@@ -29,8 +29,14 @@ const env = { ASSETS: assets } as never;
 const context = {} as ExecutionContext;
 
 describe('public route discovery', () => {
-  it('uses exactly four canonical public routes across catalog and sitemap', () => {
-    expect(PUBLIC_ROUTES.map(({ path }) => path)).toEqual(['/', '/play', '/about', '/privacy']);
+  it('uses exactly five canonical public routes across catalog and sitemap', () => {
+    expect(PUBLIC_ROUTES.map(({ path }) => path)).toEqual([
+      '/',
+      '/play',
+      '/about',
+      '/privacy',
+      '/pax-historia-alternative',
+    ]);
     expect(agentCatalog().surfaces.map(({ url }) => new URL(url).pathname)).toEqual(
       PUBLIC_ROUTES.map(({ path }) => path)
     );
@@ -79,8 +85,19 @@ describe('public route discovery', () => {
     );
     expect(catalogResponse.status).toBe(200);
     const runtimeCatalog = (await catalogResponse.json()) as ReturnType<typeof agentCatalog>;
-    expect(runtimeCatalog.surfaces).toHaveLength(4);
+    expect(runtimeCatalog.surfaces).toHaveLength(5);
     expect(runtimeCatalog.url).toBe('https://example.test');
+
+    const catalogHead = await worker.fetch(
+      new Request('https://example.test/api/ai', { method: 'HEAD' }),
+      env,
+      context
+    );
+    expect(catalogHead.status).toBe(catalogResponse.status);
+    expect(catalogHead.headers.get('Content-Type')).toBe(
+      catalogResponse.headers.get('Content-Type')
+    );
+    expect(await catalogHead.text()).toBe('');
 
     const runtimeSitemap = await worker.fetch(
       new Request('https://example.test/sitemap.xml'),

@@ -4,6 +4,7 @@ import RootLayout from "./RootLayout";
 import AboutPage from "./pages/AboutPage";
 import GamePage from "./pages/GamePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PaxHistoriaAlternativePage from "./pages/PaxHistoriaAlternativePage";
 import PrivacyPage from "./pages/PrivacyPage";
 
 // NOTE: Story Rooms (/story-room) was archived on 2026-07-02 — the local-only
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
       { path: "play/:id", element: <GamePage /> },
       { path: "about", element: <AboutPage /> },
       { path: "privacy", element: <PrivacyPage /> },
+      { path: "pax-historia-alternative", element: <PaxHistoriaAlternativePage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

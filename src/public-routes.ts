@@ -1,14 +1,14 @@
 export const PUBLIC_ORIGIN = 'https://historia.aliveville.com';
 
 export type PublicRoute = {
-  id: 'home' | 'play' | 'about' | 'privacy';
-  path: '/' | '/play' | '/about' | '/privacy';
+  id: 'home' | 'play' | 'about' | 'privacy' | 'pax-historia-alternative';
+  path: '/' | '/play' | '/about' | '/privacy' | '/pax-historia-alternative';
   title: string;
   description: string;
   heading: string;
   summary: string;
   sections: ReadonlyArray<{ heading: string; body: string }>;
-  schemaType: 'WebSite' | 'VideoGame' | 'AboutPage' | 'PrivacyPolicy';
+  schemaType: 'WebSite' | 'VideoGame' | 'AboutPage' | 'PrivacyPolicy' | 'WebPage';
 };
 
 export const PUBLIC_ROUTES: ReadonlyArray<PublicRoute> = [
@@ -95,6 +95,31 @@ export const PUBLIC_ROUTES: ReadonlyArray<PublicRoute> = [
       },
     ],
     schemaType: 'PrivacyPolicy',
+  },
+  {
+    id: 'pax-historia-alternative',
+    path: '/pax-historia-alternative',
+    title: 'Pax Historia Alternative — Free, Open-Source AI Grand Strategy',
+    description:
+      'Open Historia is a free, open-source, browser-playable alternative to Pax Historia: natural-language orders, 20+ scenarios, campaign memory, and no credit meter.',
+    heading: 'A free, open-source Pax Historia alternative',
+    summary:
+      'Open Historia is an open-source AI grand-strategy experiment playable in the browser: command a nation in plain English, keep long-running campaign memory, and bring your own AI provider or play through the shared free gateway.',
+    sections: [
+      {
+        heading: 'Why players look for alternatives',
+        body: 'Pax Historia is a hosted AI sandbox platform where scenario play runs through its own service. Open Historia takes the same idea in an open direction: MIT-licensed code, browser play with local saves, and your choice of AI provider — including a local model — instead of a metered credit system.',
+      },
+      {
+        heading: 'What you get today',
+        body: 'Natural-language turns adjudicated by an AI Game Master, 20+ historical and alternate scenarios, a living world map, diplomacy threads, and a rewindable timeline that can branch into alternate histories. Cloud saves are optional and require sign-in.',
+      },
+      {
+        heading: 'Where it is honest about its limits',
+        body: 'Open Historia is a held experiment, not a polished platform: the map detail and campaign pacing are prototype-grade, and there is no multiplayer or community scenario marketplace yet.',
+      },
+    ],
+    schemaType: 'WebPage',
   },
 ] as const;
 
@@ -292,5 +317,5 @@ export function renderPublicHtml(shell: string, route: PublicRoute): string {
   const fallback = `<main data-public-fallback><h1>${escapeHtml(route.heading)}</h1><p>${escapeHtml(route.summary)}</p>${route.sections.map(({ heading, body }) => `<section><h2>${escapeHtml(heading)}</h2><p>${escapeHtml(body)}</p></section>`).join('')}<p><a href="${markdownPath(route)}">Read this page as Markdown</a></p></main>`;
   return shell
     .replace(/<title>[\s\S]*?<\/title>[\s\S]*?<link rel="icon"/, `${head}\n    <link rel="icon"`)
-    .replace('<div id="root"></div>', `<div id="root">${fallback}</div>`);
+    .replace(/<div id="root"([^>]*)><\/div>/, `<div id="root"$1>${fallback}</div>`);
 }

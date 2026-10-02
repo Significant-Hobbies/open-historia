@@ -34,7 +34,7 @@ await write(
 );
 await write(
   'llms-full.txt',
-  `# Open Historia — full agent brief\n\nOpen Historia is an open-source AI grand-strategy game. An AI Game Master adjudicates natural-language orders and returns structured changes to the map, diplomacy, events, and timeline.\n\n${PUBLIC_ROUTES.map(renderMarkdown).join('\n---\n\n')}\n## Discovery boundary\n\nOnly the four canonical public pages above are indexed. Dynamic play identifiers, save and auth APIs, private gameplay state, and the archived Story Room are excluded.\n`
+  `# Open Historia — full agent brief\n\nOpen Historia is an open-source AI grand-strategy game. An AI Game Master adjudicates natural-language orders and returns structured changes to the map, diplomacy, events, and timeline.\n\n${PUBLIC_ROUTES.map(renderMarkdown).join('\n---\n\n')}\n## Discovery boundary\n\nOnly the ${PUBLIC_ROUTES.length} canonical public pages above are indexed. Dynamic play identifiers, save and auth APIs, private gameplay state, and the archived Story Room are excluded.\n`
 );
 
 for (const route of PUBLIC_ROUTES) {
