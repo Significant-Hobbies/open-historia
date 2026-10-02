@@ -373,9 +373,9 @@ export default function PresetBrowser({
         {sampleTimeline?.storyPath && (
           <section
             aria-label="Sample historical timeline"
-            className={`shrink-0 px-4 sm:px-6 pb-4 transition-all duration-700 ease-out ${headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            className={`sample-timeline-proof shrink-0 px-4 sm:px-6 pb-4 transition-all duration-700 ease-out ${headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <div className="max-w-3xl mx-auto rounded-2xl border border-amber-700/30 bg-slate-900/60 backdrop-blur-sm px-5 sm:px-7 py-5">
+            <div className="sample-timeline-card max-w-3xl mx-auto rounded-2xl border border-amber-700/30 bg-slate-900/60 backdrop-blur-sm px-5 sm:px-7 py-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="min-w-0">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-amber-500/80 font-bold">
@@ -398,7 +398,7 @@ export default function PresetBrowser({
                 </button>
               </div>
 
-              <ol className="mt-4 relative border-l border-amber-700/30 pl-5 space-y-3">
+              <ol className="sample-timeline-steps mt-4 relative border-l border-amber-700/30 pl-5 space-y-3">
                 {sampleTimeline.storyPath.steps.map((step) => (
                   <li key={step.id} className="relative">
                     <span
@@ -421,7 +421,7 @@ export default function PresetBrowser({
               </ol>
 
               {sampleTimeline.storyPath.sourceNotes && (
-                <p className="mt-3 text-[10px] text-slate-600 italic">
+                <p className="sample-timeline-source mt-3 text-[10px] text-slate-600 italic">
                   {sampleTimeline.storyPath.sourceNotes}
                 </p>
               )}
@@ -469,7 +469,7 @@ export default function PresetBrowser({
         {/* ----------------------------------------------------------------- */}
         <div
           ref={scrollRef}
-          className="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-8 md:px-12 lg:px-20 pb-4 scroll-smooth setup-scroll"
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden touch-pan-y overscroll-contain px-4 sm:px-8 md:px-12 lg:px-20 pb-4 scroll-smooth setup-scroll"
           style={{
             maskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 80px), transparent 100%)",
             WebkitMaskImage: "linear-gradient(to bottom, transparent 0px, black 20px, black calc(100% - 80px), transparent 100%)",
