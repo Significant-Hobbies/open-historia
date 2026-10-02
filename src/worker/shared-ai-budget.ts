@@ -14,21 +14,25 @@ function deny(): never {
 }
 
 const MODEL_RATES: Record<string, { input: number; output: number }> = {
-  // Exact priced model ID from Cloudflare's current Workers AI pricing table.
+  // Exact priced model IDs from Cloudflare's current Workers AI pricing table.
   '@cf/meta/llama-3.1-8b-instruct-fp8': { input: 13_778, output: 26_128 },
+  '@cf/meta/llama-3.1-8b-instruct-fp8-fast': { input: 4_119, output: 34_868 },
 };
 
 export async function reserveWorkersAiCall(
   env: WorkerEnv,
   model: string,
   input: unknown,
-  outputTokens: number,
+  outputTokens: number
 ): Promise<void> {
   const rates = MODEL_RATES[model];
-  if (!rates || !Number.isSafeInteger(outputTokens) || outputTokens <= 0 || outputTokens > 8_192) return deny();
+  if (!rates || !Number.isSafeInteger(outputTokens) || outputTokens <= 0 || outputTokens > 8_192)
+    return deny();
   const serializedBytes = new TextEncoder().encode(JSON.stringify(input)).byteLength;
   const estimatedInputTokens = Math.ceil(serializedBytes * 1.2);
-  const neurons = Math.ceil((estimatedInputTokens * rates.input + outputTokens * rates.output) / 1_000_000);
+  const neurons = Math.ceil(
+    (estimatedInputTokens * rates.input + outputTokens * rates.output) / 1_000_000
+  );
   if (!Number.isSafeInteger(neurons) || neurons <= 0 || neurons > DAILY_CAP) return deny();
   const namespace = env.NEURON_BUDGET;
   if (!namespace) return deny();
@@ -45,18 +49,23 @@ export async function reserveWorkersAiCall(
     return deny();
   }
   if (response.status !== 200) return deny();
-  let result: Record<string, unknown>;
+  let result: unknown;
   try {
-    result = await response.json() as Record<string, unknown>;
+    result = await response.json();
   } catch {
     return deny();
   }
+  if (result === null || typeof result !== 'object' || Array.isArray(result)) return deny();
+  const receipt = result as Record<string, unknown>;
   if (
-    result.allowed !== true ||
-    result.dayKey !== new Date().toISOString().slice(0, 10) ||
-    result.retryAfter !== 0 ||
-    !Number.isSafeInteger(result.used) || (result.used as number) < neurons ||
-    !Number.isSafeInteger(result.remaining) || (result.remaining as number) < 0 ||
-    (result.used as number) + (result.remaining as number) !== DAILY_CAP
-  ) return deny();
+    receipt.allowed !== true ||
+    receipt.dayKey !== new Date().toISOString().slice(0, 10) ||
+    receipt.retryAfter !== 0 ||
+    !Number.isSafeInteger(receipt.used) ||
+    (receipt.used as number) < neurons ||
+    !Number.isSafeInteger(receipt.remaining) ||
+    (receipt.remaining as number) < 0 ||
+    (receipt.used as number) + (receipt.remaining as number) !== DAILY_CAP
+  )
+    return deny();
 }

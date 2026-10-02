@@ -130,8 +130,14 @@ describe('turn route through the real Workers AI adapter', () => {
     expect((await response.json()).updates).toEqual([]);
   });
 
-  it('fails closed for the unpriced fast model before calling Workers AI', async () => {
-    const run = vi.fn();
+  it('repairs the legacy fast model to the exact priced identifier', async () => {
+    const run = vi.fn().mockResolvedValue({
+      response: JSON.stringify({
+        message: 'The agreement is accepted.',
+        updates: [],
+        storySoFar: 'Ready.',
+      }),
+    });
     const response = await app.request(
       '/turn',
       {
@@ -144,6 +150,22 @@ describe('turn route through the real Workers AI adapter', () => {
       },
       budgetEnv({ run })
     );
+    expect(response.status).toBe(200);
+    expect(run).toHaveBeenCalledOnce();
+    expect(run.mock.calls[0][0]).toBe('@cf/meta/llama-3.1-8b-instruct-fp8-fast');
+  });
+
+  it('fails closed for an unpriced model before calling Workers AI', async () => {
+    const run = vi.fn();
+    const unpricedRequest = {
+      ...request,
+      body: JSON.stringify({
+        command: 'Continue.',
+        gameState: { turn: 1939, players: { player: { name: 'United Kingdom' } } },
+        config: { provider: 'free-ai', model: '@cf/meta/unpriced-model' },
+      }),
+    };
+    const response = await app.request('/turn', unpricedRequest, budgetEnv({ run }));
     expect(response.status).toBe(503);
     expect((await response.json()).updates).toEqual([]);
     expect(run).not.toHaveBeenCalled();
