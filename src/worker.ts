@@ -100,10 +100,13 @@ export default {
     const url = new URL(request.url);
     const origin = requestOrigin(request, url);
 
-    if (request.method === 'GET' && url.pathname === '/api/ai') {
-      return Response.json(agentCatalog(origin), {
+    if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/api/ai') {
+      const response = Response.json(agentCatalog(origin), {
         headers: withRateLimit({ 'Cache-Control': 'public, max-age=300' }),
       });
+      return request.method === 'HEAD'
+        ? new Response(null, { status: response.status, headers: response.headers })
+        : response;
     }
 
     if (request.method === 'GET' && url.pathname === '/openapi.json') {
