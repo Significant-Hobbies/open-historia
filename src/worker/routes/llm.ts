@@ -10,6 +10,7 @@ import { LLMTimeoutError, withTimeout } from "../../../lib/llm-timeout";
 import { callLocalAI } from "../../../lib/local-ai";
 import { getClientIp, rateLimit } from "../../../lib/rate-limit";
 import { parseAiTurnResponse } from "../../../lib/turn-parser";
+import { reserveWorkersAiCall, SharedAiBudgetError } from "../shared-ai-budget";
 import type { WorkerEnv } from "../../../lib/worker-env";
 import { resolveWorkersAiModel } from "../../../lib/workers-ai-model";
 
@@ -252,6 +253,13 @@ async function callProvider(
     case "free-ai": {
       if (env.AI) {
         const model = resolveWorkersAiModel(config.model, env.AI_MODEL);
+        const budgetInput = {
+          system: systemPrompt,
+          prompt,
+          outputSchema: AI_RESPONSE_SCHEMAS[responseKind],
+          maxOutputTokens: 2048,
+        };
+        await reserveWorkersAiCall(env, model, budgetInput, 2048);
         const workersAi = createWorkersAI({ binding: env.AI });
         try {
           const result = await generateText({
@@ -458,7 +466,7 @@ llm.post("/turn", async (c) => {
     );
   } catch (error) {
     console.error("AI Error:", error instanceof LLMTimeoutError ? "timeout" : "provider-or-response");
-    const status = error instanceof LLMTimeoutError ? 504 : 500;
+    const status = error instanceof LLMTimeoutError ? 504 : error instanceof SharedAiBudgetError ? 503 : 500;
     return c.json(
       {
         message: error instanceof LLMTimeoutError
@@ -543,7 +551,7 @@ llm.post("/chat", async (c) => {
     return c.json(sanitized);
   } catch (error) {
     console.error("Diplomacy Chat Error:", "provider-or-response");
-    const status = error instanceof LLMTimeoutError ? 504 : 500;
+    const status = error instanceof LLMTimeoutError ? 504 : error instanceof SharedAiBudgetError ? 503 : 500;
     return c.json(
       {
         message:
@@ -622,7 +630,7 @@ llm.post("/advisor", async (c) => {
     return c.json(sanitized);
   } catch (error) {
     console.error("Advisor Error:", "provider-or-response");
-    const status = error instanceof LLMTimeoutError ? 504 : 500;
+    const status = error instanceof LLMTimeoutError ? 504 : error instanceof SharedAiBudgetError ? 503 : 500;
     return c.json(
       {
         advice:
