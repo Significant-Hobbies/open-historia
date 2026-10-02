@@ -11,6 +11,7 @@ export type WorkerEnv = {
   AI_BASE_URL?: string;
   AI_MODEL?: string;
   AI?: Ai;
+  FREE_AI?: Fetcher;
   NEURON_BUDGET?: DurableObjectNamespace;
   LOCAL_AI_URL?: string;
   CLI_BRIDGE_URL?: string;

@@ -38,6 +38,26 @@ const normalizeFreeAiModel = (model: string | undefined) => {
   return trimmed;
 };
 
+function createFreeAiGatewayModel(binding: Fetcher) {
+  const provider = createOpenAICompatible({
+    name: "free-ai",
+    baseURL: "https://fleet-gateway.internal/v1",
+    apiKey: "service-binding",
+    headers: { "x-gateway-project-id": "open-historia" },
+    fetch: (input, init) => binding.fetch(new Request(input, init)),
+    supportsStructuredOutputs: false,
+  });
+  return provider.chatModel("auto");
+}
+
+export function selectFreeAiGatewayModel(binding: Fetcher | undefined, nodeEnv: string | undefined) {
+  if (binding) return createFreeAiGatewayModel(binding);
+  if ((nodeEnv ?? process.env.NODE_ENV) === "production") {
+    throw new Error("Free AI gateway service binding is required in production");
+  }
+  return null;
+}
+
 async function callOpenAICompatible({
   name,
   baseURL,
@@ -251,6 +271,23 @@ async function callProvider(
       return "{}";
     }
     case "free-ai": {
+      const gatewayModel = selectFreeAiGatewayModel(env.FREE_AI, env.NODE_ENV);
+      if (gatewayModel) {
+        try {
+          const result = await generateText({
+            model: gatewayModel,
+            maxOutputTokens: 2048,
+            output: Output.object({ schema: jsonSchema(AI_RESPONSE_SCHEMAS[responseKind]) }),
+            system: systemPrompt,
+            prompt,
+            maxRetries: 0,
+          });
+          return result.text || "{}";
+        } catch (error) {
+          if (NoObjectGeneratedError.isInstance(error)) return "";
+          throw error;
+        }
+      }
       if (env.AI) {
         const model = resolveWorkersAiModel(config.model, env.AI_MODEL);
         const budgetInput = {
