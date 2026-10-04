@@ -85,8 +85,11 @@ describe('public route discovery', () => {
     );
     expect(catalogResponse.status).toBe(200);
     const runtimeCatalog = (await catalogResponse.json()) as ReturnType<typeof agentCatalog>;
-    expect(runtimeCatalog.surfaces).toHaveLength(5);
-    expect(runtimeCatalog.url).toBe('https://example.test');
+    expect(runtimeCatalog).toEqual(agentCatalog('https://example.test'));
+    expect(catalogResponse.headers.get('Cache-Control')).toBe('public, max-age=300');
+    expect(catalogResponse.headers.get('RateLimit-Limit')).toBe('60');
+    expect(catalogResponse.headers.get('RateLimit-Remaining')).toBe('59');
+    expect(catalogResponse.headers.get('RateLimit-Reset')).toBe('60');
 
     const catalogHead = await worker.fetch(
       new Request('https://example.test/api/ai', { method: 'HEAD' }),
@@ -94,9 +97,8 @@ describe('public route discovery', () => {
       context
     );
     expect(catalogHead.status).toBe(catalogResponse.status);
-    expect(catalogHead.headers.get('Content-Type')).toBe(
-      catalogResponse.headers.get('Content-Type')
-    );
+    expect([...catalogHead.headers]).toEqual([...catalogResponse.headers]);
+    expect(catalogHead.body).toBeNull();
     expect(await catalogHead.text()).toBe('');
 
     const runtimeSitemap = await worker.fetch(
@@ -124,6 +126,28 @@ describe('public route discovery', () => {
       );
       expect(negotiatedResponse.headers.get('Content-Type')).toContain('text/markdown');
       expect(await negotiatedResponse.text()).toContain(route.heading);
+    }
+  });
+
+  it.each([
+    ['POST', '/api/ai'],
+    ['GET', '/api/ai/'],
+    ['HEAD', '/api/ai/'],
+    ['GET', '/api/ai/private'],
+    ['HEAD', '/api/ai/private'],
+  ])('does not serve the public catalog for %s %s', async (method, path) => {
+    const response = await worker.fetch(
+      new Request(`https://example.test${path}`, { method }),
+      env,
+      context
+    );
+    expect(response.status).toBe(404);
+    expect(response.headers.get('Cache-Control')).not.toBe('public, max-age=300');
+    expect(response.headers.get('RateLimit-Limit')).toBeNull();
+    if (method === 'HEAD') {
+      expect(await response.text()).toBe('');
+    } else {
+      expect(await response.text()).not.toContain('Open Historia');
     }
   });
 
