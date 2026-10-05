@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0B0F19;
+  --background: #0b0f19;
   --foreground: #e2e8f0;
   --accent: #d97706;
   --accent-dim: #92400e;
   --accent-glow: rgba(217, 119, 6, 0.35);
-  --surface: #151B2B;
-  --surface-raised: #1E2538;
+  --surface: #151b2b;
+  --surface-raised: #1e2538;
   --border: rgba(51, 65, 85, 0.5);
   --border-subtle: rgba(51, 65, 85, 0.25);
 }
@@ -113,69 +113,137 @@ input[type="number"] {
 
 /* Smooth animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 8px 2px rgba(217, 119, 6, 0.3); }
-  50% { box-shadow: 0 0 20px 6px rgba(217, 119, 6, 0.5); }
+  0%,
+  100% {
+    box-shadow: 0 0 8px 2px rgba(217, 119, 6, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px 6px rgba(217, 119, 6, 0.5);
+  }
 }
 
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
 }
 
 @keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-16px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes flashBorder {
-  0% { border-color: rgba(251, 191, 36, 0.8); box-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
-  100% { border-color: inherit; box-shadow: none; }
+  0% {
+    border-color: rgba(251, 191, 36, 0.8);
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+  }
+  100% {
+    border-color: inherit;
+    box-shadow: none;
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes glowBorder {
-  0%, 100% { border-color: rgba(217, 119, 6, 0.3); }
-  50% { border-color: rgba(217, 119, 6, 0.7); }
+  0%,
+  100% {
+    border-color: rgba(217, 119, 6, 0.3);
+  }
+  50% {
+    border-color: rgba(217, 119, 6, 0.7);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .animate-fade-in {
@@ -242,12 +310,14 @@ input[type="number"] {
   background: rgba(12, 18, 34, 0.92);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(51, 65, 85, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(51, 65, 85, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(51, 65, 85, 0.1);
 }
 
 /* War room scanline effect (subtle) */
 .scanline-overlay::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
@@ -267,11 +337,16 @@ input[type="number"] {
 }
 
 .preset-card-glow::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, transparent 50%, rgba(217, 119, 6, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.15) 0%,
+    transparent 50%,
+    rgba(217, 119, 6, 0.1) 100%
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -307,9 +382,17 @@ input[type="number"] {
     max-height: 100%;
     align-self: start;
   }
-  div.campaign-story { display: flex; flex-direction: column; }
-  .campaign-story > :first-child { flex-shrink: 0; }
-  .campaign-story-body { overflow-y: auto; min-height: 0; }
+  div.campaign-story {
+    display: flex;
+    flex-direction: column;
+  }
+  .campaign-story > :first-child {
+    flex-shrink: 0;
+  }
+  .campaign-story-body {
+    overflow-y: auto;
+    min-height: 0;
+  }
   .campaign-commands {
     position: relative;
     inset: auto;
@@ -320,7 +403,8 @@ input[type="number"] {
     left: calc(32rem + 32px);
     translate: none;
   }
-  .campaign-relations, .campaign-advisor-toggle {
+  .campaign-relations,
+  .campaign-advisor-toggle {
     position: relative;
     inset: auto;
     grid-column: 2;
@@ -328,7 +412,9 @@ input[type="number"] {
     align-self: end;
     justify-self: end;
   }
-  .campaign-advisor-toggle { margin-right: 336px; }
+  .campaign-advisor-toggle {
+    margin-right: 336px;
+  }
   .campaign-timeline {
     position: relative;
     inset: auto;
@@ -366,8 +452,13 @@ input[type="number"] {
     z-index: auto;
   }
   /* Stacked panels have no map behind them; avoid unnecessary blur layers. */
-  .campaign-shell [class*="backdrop-blur"] { backdrop-filter: none; }
-  .campaign-shell > .campaign-toolbar { order: 0; padding: 0; }
+  .campaign-shell [class*="backdrop-blur"] {
+    backdrop-filter: none;
+  }
+  .campaign-shell > .campaign-toolbar {
+    order: 0;
+    padding: 0;
+  }
   .campaign-toolbar > div {
     flex-wrap: wrap;
     gap: 8px 12px;
@@ -375,26 +466,83 @@ input[type="number"] {
     width: 100%;
     overflow: visible;
   }
-  .campaign-toolbar > div > .w-px { display: none; }
-  .campaign-toolbar > div > div { min-width: 0; }
-  .campaign-shell > .campaign-map { order: 1; height: 34dvh; min-height: 240px; overflow: hidden; border-radius: 8px; }
-  .campaign-shell > .campaign-commands { order: 2; }
-  .campaign-terminal { width: 100%; max-width: none; height: 280px; }
-  .campaign-shell > .campaign-story { order: 3; }
-  .campaign-shell > .campaign-diplomacy { order: 4; max-height: 65dvh; }
-  .campaign-shell > .campaign-relations { order: 5; }
-  .campaign-shell > .campaign-advisor-toggle { order: 6; border-radius: 8px; scale: 1; }
-  .campaign-shell > .campaign-timeline { order: 7; margin-top: 32px; }
-  .campaign-timeline > button { top: -44px; min-width: 160px; }
+  .campaign-toolbar > div > .w-px {
+    display: none;
+  }
+  .campaign-toolbar > div > div {
+    min-width: 0;
+  }
+  .campaign-shell > .campaign-map {
+    order: 1;
+    height: 34dvh;
+    min-height: 240px;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  .campaign-shell > .campaign-commands {
+    order: 2;
+  }
+  .campaign-terminal {
+    width: 100%;
+    max-width: none;
+    height: 280px;
+  }
+  .campaign-shell > .campaign-story {
+    order: 3;
+  }
+  .campaign-shell > .campaign-diplomacy {
+    order: 4;
+    max-height: 65dvh;
+  }
+  .campaign-shell > .campaign-relations {
+    order: 5;
+  }
+  .campaign-shell > .campaign-advisor-toggle {
+    order: 6;
+    border-radius: 8px;
+    scale: 1;
+  }
+  .campaign-shell > .campaign-timeline {
+    order: 7;
+    margin-top: 32px;
+  }
+  .campaign-timeline > button {
+    top: -44px;
+    min-width: 160px;
+  }
   .campaign-shell button,
   .campaign-shell select,
-  .campaign-shell input { min-height: 44px; }
+  .campaign-shell input {
+    min-height: 44px;
+  }
   .campaign-shell input,
-  .campaign-shell select { font-size: 16px; }
-  .campaign-shell button { min-width: 44px; font-size: 14px; }
-  .campaign-shell input::placeholder { color: #94a3b8; }
-  .campaign-save-notification { position: fixed; top: auto; bottom: 12px; }
-  .campaign-story p { font-size: 14px; line-height: 1.5; }
-  .campaign-shell :focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
-  .campaign-advisor-panel { bottom: 12px; right: 12px; width: min(360px, calc(100vw - 24px)); max-height: 80dvh; }
+  .campaign-shell select {
+    font-size: 16px;
+  }
+  .campaign-shell button {
+    min-width: 44px;
+    font-size: 14px;
+  }
+  .campaign-shell input::placeholder {
+    color: #94a3b8;
+  }
+  .campaign-save-notification {
+    position: fixed;
+    top: auto;
+    bottom: 12px;
+  }
+  .campaign-story p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .campaign-shell :focus-visible {
+    outline: 2px solid #fbbf24;
+    outline-offset: 2px;
+  }
+  .campaign-advisor-panel {
+    bottom: 12px;
+    right: 12px;
+    width: min(360px, calc(100vw - 24px));
+    max-height: 80dvh;
+  }
 }

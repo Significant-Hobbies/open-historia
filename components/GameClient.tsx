@@ -1,34 +1,34 @@
-import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
-import { trackCoreAction } from "@/lib/analytics";
-import { useAdvisor } from "@/hooks/useAdvisor";
-import { useDiplomacy } from "@/hooks/useDiplomacy";
-import { useGameState } from "@/hooks/useGameState";
-import { useSaveLoad } from "@/hooks/useSaveLoad";
-import { useTimeline } from "@/hooks/useTimeline";
-import { useTurnProcessing } from "@/hooks/useTurnProcessing";
-import type { LogEntry } from "@/lib/game-storage";
-import type { GameConfig } from "@/lib/types";
+import { trackCoreAction } from '@/lib/analytics';
+import { useAdvisor } from '@/hooks/useAdvisor';
+import { useDiplomacy } from '@/hooks/useDiplomacy';
+import { useGameState } from '@/hooks/useGameState';
+import { useSaveLoad } from '@/hooks/useSaveLoad';
+import { useTimeline } from '@/hooks/useTimeline';
+import { useTurnProcessing } from '@/hooks/useTurnProcessing';
+import type { LogEntry } from '@/lib/game-storage';
+import type { GameConfig } from '@/lib/types';
 
-import { MapLoadingState, MapUnavailableState } from "@/components/MapShell";
+import { MapLoadingState, MapUnavailableState } from '@/components/MapShell';
 
-const MapView = lazy(() => import("@/components/MapView"));
-const DiplomacyChat = lazy(() => import("@/components/DiplomacyChat"));
-const PresetBrowser = lazy(() => import("@/components/PresetBrowser"));
-const GameSetup = lazy(() => import("@/components/GameSetup"));
-const CommandTerminal = lazy(() => import("@/components/CommandTerminal"));
-const Timeline = lazy(() => import("@/components/Timeline"));
-const Advisor = lazy(() => import("@/components/Advisor"));
-const StoryPath = lazy(() => import("@/components/StoryPath"));
-const RelationsPanel = lazy(() => import("@/components/RelationsPanel"));
-const PromptSettings = lazy(() => import("@/components/PromptSettings"));
+const MapView = lazy(() => import('@/components/MapView'));
+const DiplomacyChat = lazy(() => import('@/components/DiplomacyChat'));
+const PresetBrowser = lazy(() => import('@/components/PresetBrowser'));
+const GameSetup = lazy(() => import('@/components/GameSetup'));
+const CommandTerminal = lazy(() => import('@/components/CommandTerminal'));
+const Timeline = lazy(() => import('@/components/Timeline'));
+const Advisor = lazy(() => import('@/components/Advisor'));
+const StoryPath = lazy(() => import('@/components/StoryPath'));
+const RelationsPanel = lazy(() => import('@/components/RelationsPanel'));
+const PromptSettings = lazy(() => import('@/components/PromptSettings'));
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function uid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -51,7 +51,8 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
     setEvents: (val) => turn.setEvents(val),
     setRelations,
     addLog: (text, type) => turn.addLog(text, type),
-    canRewind: () => !turn.processingTurn && !diplomacy.processingChat && !advisor.processingAdvisor,
+    canRewind: () =>
+      !turn.processingTurn && !diplomacy.processingChat && !advisor.processingAdvisor,
     restoreMemory: (memory) => {
       turn.setLogs(memory.logs);
       turn.setStorySoFar(memory.storySoFar);
@@ -70,7 +71,10 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
     relations,
     setRelations,
     timelineSnapshots: timeline.timelineSnapshots,
-    captureContext: () => ({ chatThreads: diplomacy.chatThreads, advisorHistory: advisor.advisorMessages }),
+    captureContext: () => ({
+      chatThreads: diplomacy.chatThreads,
+      advisorHistory: advisor.advisorMessages,
+    }),
     setTimelineSnapshots: timeline.setTimelineSnapshots,
   });
 
@@ -93,15 +97,17 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
 
   // ── Save/Load ──
   const save = useSaveLoad({
-    gameState: game.gameState ? {
-      ...game.gameState,
-      relations,
-      chatThreads: diplomacy.chatThreads,
-      timeline: timeline.timelineSnapshots,
-      advisorHistory: advisor.advisorMessages,
-      pendingOrders: turn.pendingOrders,
-      completedStepIds: turn.completedStepIds,
-    } : null,
+    gameState: game.gameState
+      ? {
+          ...game.gameState,
+          relations,
+          chatThreads: diplomacy.chatThreads,
+          timeline: timeline.timelineSnapshots,
+          advisorHistory: advisor.advisorMessages,
+          pendingOrders: turn.pendingOrders,
+          completedStepIds: turn.completedStepIds,
+        }
+      : null,
     gameConfig: game.gameConfig,
     logs: turn.logs,
     events: turn.events,
@@ -127,7 +133,17 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       advisor.setAdvisorMessages(game.gameState?.advisorHistory || []);
       turn.setPendingOrders(game.gameState?.pendingOrders || []);
     }
-  }, [game.initialLogs, game.initialEvents, game.initialStorySoFar, game.initialCompletedStepIds, game.gameState, turn, diplomacy, timeline, advisor]);
+  }, [
+    game.initialLogs,
+    game.initialEvents,
+    game.initialStorySoFar,
+    game.initialCompletedStepIds,
+    game.gameState,
+    turn,
+    diplomacy,
+    timeline,
+    advisor,
+  ]);
 
   // ── Game start handler (bridges game + turn + diplomacy + advisor state) ──
   const handleStartGame = useCallback(
@@ -136,7 +152,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       save.setGameId(gameId);
 
       // Owner-facing analytics — a new game session was begun.
-      trackCoreAction("game_started");
+      trackCoreAction('game_started');
 
       // Reset subsystem state
       diplomacy.setChatThreads([]);
@@ -145,13 +161,13 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       turn.setPendingOrders([]);
 
       turn.setLogs([
-        { id: uid(), type: "info", text: "Welcome to Open Historia." },
-        { id: uid(), type: "info", text: `Scenario: ${config.scenario.slice(0, 120)}...` },
-        { id: uid(), type: "info", text: `Difficulty: ${config.difficulty}` },
-        { id: uid(), type: "info", text: "The AI Game Master is listening..." },
+        { id: uid(), type: 'info', text: 'Welcome to Open Historia.' },
+        { id: uid(), type: 'info', text: `Scenario: ${config.scenario.slice(0, 120)}...` },
+        { id: uid(), type: 'info', text: `Difficulty: ${config.difficulty}` },
+        { id: uid(), type: 'info', text: 'The AI Game Master is listening...' },
       ]);
       turn.setEvents([]);
-      turn.setStorySoFar("");
+      turn.setStorySoFar('');
       turn.setCompletedStepIds([]);
       setRelations([]);
     },
@@ -164,7 +180,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       if (turn.processingTurn) return;
       const result = await game.handleLoadSavedGame(saveId);
       if (!result) {
-        turn.addLog(`Save "${saveId}" not found.`, "error");
+        turn.addLog(`Save "${saveId}" not found.`, 'error');
         return;
       }
       turn.setPendingOrders(result.state.pendingOrders || []);
@@ -177,7 +193,11 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       turn.setCompletedStepIds(result.completedStepIds);
       turn.setLogs([
         ...result.logs,
-        { id: uid(), type: "success" as LogEntry["type"], text: `Loaded save from ${new Date(Date.now()).toLocaleString()}.` },
+        {
+          id: uid(),
+          type: 'success' as LogEntry['type'],
+          text: `Loaded save from ${new Date(Date.now()).toLocaleString()}.`,
+        },
       ]);
       save.onLoadComplete(saveId);
     },
@@ -192,7 +212,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
     game.setShowPresets(true);
     turn.setLogs([]);
     turn.setEvents([]);
-    turn.setStorySoFar("");
+    turn.setStorySoFar('');
     turn.setCompletedStepIds([]);
     turn.setPendingOrders([]);
     diplomacy.setChatThreads([]);
@@ -207,7 +227,11 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
   const [yearFlash, setYearFlash] = useState(false);
 
   useEffect(() => {
-    if (game.gameState && prevTurnRef.current !== null && prevTurnRef.current !== game.gameState.turn) {
+    if (
+      game.gameState &&
+      prevTurnRef.current !== null &&
+      prevTurnRef.current !== game.gameState.turn
+    ) {
       setYearFlash(true);
       const timer = setTimeout(() => setYearFlash(false), 600);
       return () => clearTimeout(timer);
@@ -224,12 +248,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
   // World topology failed to load (or returned empty) — show a polished
   // fallback that still explains the situation instead of a blank map.
   if (game.provincesCache.length === 0) {
-    return (
-      <MapUnavailableState
-        error={game.worldLoadError}
-        onRetry={game.retryWorldLoad}
-      />
-    );
+    return <MapUnavailableState error={game.worldLoadError} onRetry={game.retryWorldLoad} />;
   }
 
   // Phase 1: Preset selection
@@ -255,7 +274,10 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       <GameSetup
         provinces={game.provincesCache}
         onStartGame={handleStartGame}
-        onBack={() => { game.setShowPresets(true); game.setSelectedPreset(null); }}
+        onBack={() => {
+          game.setShowPresets(true);
+          game.setSelectedPreset(null);
+        }}
         preset={
           game.selectedPreset
             ? {
@@ -284,20 +306,22 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
               scroll inside itself (max-w-full + overflow-x-auto) so it never
               forces horizontal scroll on the whole page. */}
           <div className="max-w-full overflow-x-auto bg-slate-900/80 px-3 py-2 sm:px-4 rounded-full border border-slate-700 backdrop-blur pointer-events-auto flex items-center gap-3 sm:gap-4">
-            <div className={yearFlash ? "animate-flash-border rounded px-1 -mx-1" : ""}>
+            <div className={yearFlash ? 'animate-flash-border rounded px-1 -mx-1' : ''}>
               <span className="text-slate-500 text-sm uppercase mr-2">Year</span>
               <span className="font-bold">{gameState.turn}</span>
             </div>
             <div className="w-px h-6 bg-slate-700" />
             <div>
               <span className="text-blue-400 text-sm uppercase mr-2">Nation</span>
-              <span className="font-bold">{gameState.players["player"].name}</span>
+              <span className="font-bold">{gameState.players['player'].name}</span>
             </div>
             <div className="w-px h-6 bg-slate-700" />
             <button
               onClick={save.handleSaveGame}
               className="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded transition-colors uppercase"
-              title={save.lastSaveTime ? `Last: ${new Date(save.lastSaveTime).toLocaleString()}` : "Save"}
+              title={
+                save.lastSaveTime ? `Last: ${new Date(save.lastSaveTime).toLocaleString()}` : 'Save'
+              }
             >
               Save
             </button>
@@ -338,7 +362,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
                 <option value="1y">1 Year</option>
                 <option value="custom">Custom...</option>
               </select>
-              {turn.timeStep === "custom" && (
+              {turn.timeStep === 'custom' && (
                 <input
                   type="text"
                   value={turn.customTime}
@@ -351,9 +375,9 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
               <button
                 onClick={turn.handleNextTurn}
                 disabled={turn.processingTurn}
-                className={`bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-bold px-3 py-1 rounded transition-colors uppercase ${turn.processingTurn ? "animate-pulse-glow" : ""}`}
+                className={`bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-bold px-3 py-1 rounded transition-colors uppercase ${turn.processingTurn ? 'animate-pulse-glow' : ''}`}
               >
-                {turn.processingTurn ? "Processing..." : "Advance"}
+                {turn.processingTurn ? 'Processing...' : 'Advance'}
               </button>
             </div>
           </div>
@@ -363,25 +387,29 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
       {/* Map */}
       {gameState && (
         <div className="campaign-map absolute inset-0">
-        <MapView
-          provinces={gameState.provinces}
-          players={gameState.players}
-          onSelectProvince={game.handleSelectProvince}
-          selectedProvinceId={gameState.selectedProvinceId}
-          theme={gameState.theme}
-          relations={relations}
-        />
+          <MapView
+            provinces={gameState.provinces}
+            players={gameState.players}
+            onSelectProvince={game.handleSelectProvince}
+            selectedProvinceId={gameState.selectedProvinceId}
+            theme={gameState.theme}
+            relations={relations}
+          />
         </div>
       )}
 
       {/* Command Terminal + Advance Button (bottom-left) */}
       <div className="campaign-commands absolute bottom-[140px] left-4 z-20">
-        <CommandTerminal logs={turn.logs} onCommand={turn.queueOrder} processing={turn.processingTurn} />
+        <CommandTerminal
+          logs={turn.logs}
+          onCommand={turn.queueOrder}
+          processing={turn.processingTurn}
+        />
         {/* Inline advance bar below terminal */}
         <div className="mt-1 flex items-center gap-2 bg-slate-900/90 border border-slate-700 rounded px-2 py-1.5 backdrop-blur font-mono">
           {turn.pendingOrders.length > 0 && (
             <span className="text-amber-400 text-xs">
-              {turn.pendingOrders.length} order{turn.pendingOrders.length > 1 ? "s" : ""} queued
+              {turn.pendingOrders.length} order{turn.pendingOrders.length > 1 ? 's' : ''} queued
             </span>
           )}
           {turn.pendingOrders.length === 0 && (
@@ -399,9 +427,9 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
           <button
             onClick={turn.handleNextTurn}
             disabled={turn.processingTurn}
-            className={`bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-bold px-4 py-1 rounded transition-colors uppercase ${turn.processingTurn ? "animate-pulse-glow" : ""}`}
+            className={`bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-bold px-4 py-1 rounded transition-colors uppercase ${turn.processingTurn ? 'animate-pulse-glow' : ''}`}
           >
-            {turn.processingTurn ? "Processing..." : "Advance"}
+            {turn.processingTurn ? 'Processing...' : 'Advance'}
           </button>
         </div>
       </div>
@@ -420,7 +448,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
           chatThreads={diplomacy.chatThreads}
           provinces={gameState.provinces}
           players={gameState.players}
-          playerNationName={gameState.players["player"].name}
+          playerNationName={gameState.players['player'].name}
           currentYear={gameState.turn}
           onSendMessage={diplomacy.handleSendChatMessage}
           onCreateThread={diplomacy.handleCreateThread}
@@ -431,12 +459,10 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
 
       {/* Relations Panel (bottom-right) */}
       {gameState && relations.length > 0 && (
-        <div
-          className="campaign-relations absolute bottom-[140px] right-4 z-20"
-        >
+        <div className="campaign-relations absolute bottom-[140px] right-4 z-20">
           <RelationsPanel
             relations={relations}
-            playerNationName={gameState.players["player"].name}
+            playerNationName={gameState.players['player'].name}
           />
         </div>
       )}
@@ -447,7 +473,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
           messages={advisor.advisorMessages}
           onAskAdvisor={advisor.handleAskAdvisor}
           processing={advisor.processingAdvisor}
-          playerNation={gameState.players["player"].name}
+          playerNation={gameState.players['player'].name}
           currentYear={gameState.turn}
         />
       )}
@@ -466,7 +492,7 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
         <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
           <div
             className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"
-            style={{ animation: "scanline 2s linear infinite" }}
+            style={{ animation: 'scanline 2s linear infinite' }}
           />
           <div className="absolute inset-0 bg-slate-950/10" />
         </div>
@@ -505,19 +531,16 @@ function GameClientInner({ initialGameId }: { initialGameId?: string } = {}) {
                 >
                   <div className="min-w-0">
                     <div className="text-sm text-slate-100 truncate">
-                      {s.id === "autosave" ? "Autosave" : "Manual Save"}
-                      {" · "}
+                      {s.id === 'autosave' ? 'Autosave' : 'Manual Save'}
+                      {' · '}
                       {game.getNationLabel(s.gameConfig.playerNationId)}
-                      {" · "}
+                      {' · '}
                       {s.gameConfig.provider}/{s.gameConfig.model}
                     </div>
                     <div className="text-xs text-slate-400 truncate">
-                      {new Date(s.timestamp).toLocaleString()} · Turn{" "}
-                      {s.gameState.turn}
+                      {new Date(s.timestamp).toLocaleString()} · Turn {s.gameState.turn}
                     </div>
-                    <div className="text-xs text-slate-500 truncate">
-                      {s.gameConfig.scenario}
-                    </div>
+                    <div className="text-xs text-slate-500 truncate">{s.gameConfig.scenario}</div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button

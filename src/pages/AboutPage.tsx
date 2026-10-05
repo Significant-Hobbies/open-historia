@@ -1,35 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const FEATURES = [
   {
-    title: "Natural-language command",
-    body: "No menus, no build queues. Type what you want — raise an army, broker a marriage alliance, fund a rebellion — and the Game Master works out what happens.",
+    title: 'Natural-language command',
+    body: 'No menus, no build queues. Type what you want — raise an army, broker a marriage alliance, fund a rebellion — and the Game Master works out what happens.',
   },
   {
-    title: "An AI as the rules engine",
-    body: "There is no hard combat math. A large language model adjudicates every turn, returning a strict-shape JSON contract that updates the map, diplomacy, and the timeline.",
+    title: 'An AI as the rules engine',
+    body: 'There is no hard combat math. A large language model adjudicates every turn, returning a strict-shape JSON contract that updates the map, diplomacy, and the timeline.',
   },
   {
-    title: "Rewind and branch history",
-    body: "Every turn is a snapshot on the timeline. Rewind to any prior point and branch a new alternate history from there — your choices are never final.",
+    title: 'Rewind and branch history',
+    body: 'Every turn is a snapshot on the timeline. Rewind to any prior point and branch a new alternate history from there — your choices are never final.',
   },
 ];
 
 const STEPS = [
   {
-    n: "01",
-    title: "Pick a scenario",
-    body: "Start from a historical, modern, alternate, or fictional preset — or write your own. Choose the nation you command and an AI provider.",
+    n: '01',
+    title: 'Pick a scenario',
+    body: 'Start from a historical, modern, alternate, or fictional preset — or write your own. Choose the nation you command and an AI provider.',
   },
   {
-    n: "02",
-    title: "Issue your orders",
-    body: "Queue commands in plain English and advance time. The Game Master returns the consequences: territory changes, events, and shifting relations.",
+    n: '02',
+    title: 'Issue your orders',
+    body: 'Queue commands in plain English and advance time. The Game Master returns the consequences: territory changes, events, and shifting relations.',
   },
   {
-    n: "03",
-    title: "Watch history unfold",
-    body: "The world map and diplomacy threads update live. Rewind any turn, branch a new timeline, and save your game to the cloud when signed in.",
+    n: '03',
+    title: 'Watch history unfold',
+    body: 'The world map and diplomacy threads update live. Rewind any turn, branch a new timeline, and save your game to the cloud when signed in.',
   },
 ];
 
@@ -47,9 +47,9 @@ export default function AboutPage() {
           Steer history, one order at a time.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-7 text-slate-300 sm:text-lg">
-          Open Historia is an open-source AI grand-strategy game. You command a
-          civilization in plain English, and a large-language-model Game Master
-          adjudicates every turn on a living world map.
+          Open Historia is an open-source AI grand-strategy game. You command a civilization in
+          plain English, and a large-language-model Game Master adjudicates every turn on a living
+          world map.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
@@ -73,10 +73,7 @@ export default function AboutPage() {
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="rounded-xl border border-slate-800 bg-[#151B2B] p-5"
-            >
+            <div key={f.title} className="rounded-xl border border-slate-800 bg-[#151B2B] p-5">
               <h3 className="text-base font-semibold text-amber-400">{f.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-300">{f.body}</p>
             </div>
@@ -90,10 +87,7 @@ export default function AboutPage() {
         </h2>
         <ol className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
           {STEPS.map((s) => (
-            <li
-              key={s.n}
-              className="rounded-xl border border-slate-800 bg-[#151B2B] p-5"
-            >
+            <li key={s.n} className="rounded-xl border border-slate-800 bg-[#151B2B] p-5">
               <div className="font-mono text-xs tracking-[0.15em] text-amber-500/70">{s.n}</div>
               <h3 className="mt-3 text-base font-semibold text-slate-100">{s.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-300">{s.body}</p>
@@ -105,24 +99,26 @@ export default function AboutPage() {
       <section className="mx-auto max-w-3xl px-5 py-12">
         <h2 className="text-xl font-semibold text-amber-500">Pluggable AI</h2>
         <p className="mt-2 text-sm leading-7 text-slate-300">
-          Pick a provider on game setup — Anthropic Claude, OpenAI, Google Gemini, DeepSeek,
-          or a local OpenAI-compatible endpoint. Your API key stays in your session and is
-          sent only to the provider you chose.
+          Pick a provider on game setup — Anthropic Claude, OpenAI, Google Gemini, DeepSeek, or a
+          local OpenAI-compatible endpoint. Your API key stays in your session and is sent only to
+          the provider you chose.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-amber-500">Saves &amp; alternate timelines</h2>
+        <h2 className="mt-8 text-xl font-semibold text-amber-500">
+          Saves &amp; alternate timelines
+        </h2>
         <p className="mt-2 text-sm leading-7 text-slate-300">
-          Cloud save when signed in; rewind to any prior turn and branch a new timeline from
-          there. Saves serialize only province ownership, so the format survives changes to
-          the underlying map data.
+          Cloud save when signed in; rewind to any prior turn and branch a new timeline from there.
+          Saves serialize only province ownership, so the format survives changes to the underlying
+          map data.
         </p>
 
         <h2 className="mt-8 text-xl font-semibold text-amber-500">What it isn&apos;t</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-300">
           <li>A live multiplayer game. (Yet.)</li>
           <li>
-            A simulation with hard combat math — the LLM is the rules engine, with
-            strict-shape JSON as the contract.
+            A simulation with hard combat math — the LLM is the rules engine, with strict-shape JSON
+            as the contract.
           </li>
           <li>A chat-with-NPC product. The AI is the world referee, not a character.</li>
         </ul>
@@ -146,11 +142,11 @@ export default function AboutPage() {
       </section>
 
       <footer className="border-t border-slate-800/60 py-8 text-center text-xs text-slate-600">
-        Open Historia · open-source AI grand strategy ·{" "}
+        Open Historia · open-source AI grand strategy ·{' '}
         <Link to="/privacy" className="hover:text-slate-400">
           Privacy
         </Link>
-        {" · "}
+        {' · '}
         <a
           href="https://github.com/sarthakagrawal927/open-historia"
           aria-label="GitHub repository"

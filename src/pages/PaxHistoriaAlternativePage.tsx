@@ -1,40 +1,43 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const COMPARISON = [
   {
-    label: "Cost model",
-    openHistoria: "Free to play — bring your own AI provider key, a local model, or the shared free gateway. No credit meter.",
-    theirs: "Hosted platform where play runs through its own service.",
+    label: 'Cost model',
+    openHistoria:
+      'Free to play — bring your own AI provider key, a local model, or the shared free gateway. No credit meter.',
+    theirs: 'Hosted platform where play runs through its own service.',
   },
   {
-    label: "Source",
-    openHistoria: "MIT-licensed and public on GitHub.",
-    theirs: "Closed-source platform.",
+    label: 'Source',
+    openHistoria: 'MIT-licensed and public on GitHub.',
+    theirs: 'Closed-source platform.',
   },
   {
-    label: "Where it runs",
-    openHistoria: "In the browser — nothing to install. Guests play with local saves; optional sign-in adds cloud saves.",
-    theirs: "Hosted web and mobile apps.",
+    label: 'Where it runs',
+    openHistoria:
+      'In the browser — nothing to install. Guests play with local saves; optional sign-in adds cloud saves.',
+    theirs: 'Hosted web and mobile apps.',
   },
   {
-    label: "How you play",
-    openHistoria: "Type orders in plain English; an AI Game Master adjudicates each turn into map, diplomacy, and timeline changes.",
-    theirs: "Create, share, and play community-built AI sandbox worlds.",
+    label: 'How you play',
+    openHistoria:
+      'Type orders in plain English; an AI Game Master adjudicates each turn into map, diplomacy, and timeline changes.',
+    theirs: 'Create, share, and play community-built AI sandbox worlds.',
   },
 ];
 
 const PICKS = [
   {
-    title: "Plain-English grand strategy",
-    body: "Raise an army, broker an alliance, fund a rebellion — type the order and the Game Master works out what happens on the map.",
+    title: 'Plain-English grand strategy',
+    body: 'Raise an army, broker an alliance, fund a rebellion — type the order and the Game Master works out what happens on the map.',
   },
   {
-    title: "20+ scenarios",
-    body: "Historical, modern, alternate-history, and fictional presets — pick a nation and start a campaign in seconds.",
+    title: '20+ scenarios',
+    body: 'Historical, modern, alternate-history, and fictional presets — pick a nation and start a campaign in seconds.',
   },
   {
-    title: "Rewindable timeline",
-    body: "Every turn is a snapshot. Rewind to any decision and branch a new alternate history from there.",
+    title: 'Rewindable timeline',
+    body: 'Every turn is a snapshot. Rewind to any decision and branch a new alternate history from there.',
   },
 ];
 
@@ -52,9 +55,9 @@ export default function PaxHistoriaAlternativePage() {
           A free, open-source Pax Historia alternative
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-7 text-slate-300 sm:text-lg">
-          If you like the idea of an AI-adjudicated alternate-history sandbox but
-          want one you can open in a browser, inspect, and run on your own AI
-          provider — that&apos;s what Open Historia is.
+          If you like the idea of an AI-adjudicated alternate-history sandbox but want one you can
+          open in a browser, inspect, and run on your own AI provider — that&apos;s what Open
+          Historia is.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
@@ -75,10 +78,7 @@ export default function PaxHistoriaAlternativePage() {
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {PICKS.map((p) => (
-            <div
-              key={p.title}
-              className="rounded-xl border border-slate-800 bg-[#151B2B] p-5"
-            >
+            <div key={p.title} className="rounded-xl border border-slate-800 bg-[#151B2B] p-5">
               <h3 className="text-base font-semibold text-amber-400">{p.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-300">{p.body}</p>
             </div>
@@ -91,15 +91,15 @@ export default function PaxHistoriaAlternativePage() {
           Open Historia vs. Pax Historia
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-sm text-slate-400">
-          Pax Historia is a polished hosted platform with a large community.
-          Open Historia is a smaller open-source experiment — the honest trade-offs:
+          Pax Historia is a polished hosted platform with a large community. Open Historia is a
+          smaller open-source experiment — the honest trade-offs:
         </p>
         <div className="mt-8 overflow-hidden rounded-xl border border-slate-800">
           {COMPARISON.map((row, i) => (
             <div
               key={row.label}
               className={`grid grid-cols-1 gap-2 p-5 sm:grid-cols-[10rem_1fr_1fr] sm:gap-6 ${
-                i % 2 === 0 ? "bg-[#151B2B]" : "bg-[#0f1522]"
+                i % 2 === 0 ? 'bg-[#151B2B]' : 'bg-[#0f1522]'
               }`}
             >
               <div className="text-sm font-semibold text-slate-100">{row.label}</div>
@@ -113,17 +113,16 @@ export default function PaxHistoriaAlternativePage() {
       <section className="mx-auto max-w-3xl px-5 py-12">
         <h2 className="text-xl font-semibold text-amber-500">Where it&apos;s still behind</h2>
         <p className="mt-2 text-sm leading-7 text-slate-300">
-          Open Historia is a held experiment, not a finished platform. The map
-          detail and campaign pacing are prototype-grade, and there is no
-          multiplayer or community scenario marketplace yet. If you want the
-          mature product, Pax Historia is it — if you want the open, hackable,
+          Open Historia is a held experiment, not a finished platform. The map detail and campaign
+          pacing are prototype-grade, and there is no multiplayer or community scenario marketplace
+          yet. If you want the mature product, Pax Historia is it — if you want the open, hackable,
           no-credits version to play with or build on, try this one.
         </p>
         <h2 className="mt-8 text-xl font-semibold text-amber-500">Your keys, your provider</h2>
         <p className="mt-2 text-sm leading-7 text-slate-300">
-          Pick Anthropic Claude, OpenAI, Google Gemini, DeepSeek, a local
-          OpenAI-compatible model, or the shared free gateway on setup. Provider
-          keys stay in your session and go only to the provider you chose.
+          Pick Anthropic Claude, OpenAI, Google Gemini, DeepSeek, a local OpenAI-compatible model,
+          or the shared free gateway on setup. Provider keys stay in your session and go only to the
+          provider you chose.
         </p>
       </section>
 
@@ -145,15 +144,15 @@ export default function PaxHistoriaAlternativePage() {
       </section>
 
       <footer className="border-t border-slate-800/60 py-8 text-center text-xs text-slate-600">
-        Open Historia · open-source AI grand strategy ·{" "}
+        Open Historia · open-source AI grand strategy ·{' '}
         <Link to="/about" className="hover:text-slate-400">
           About
         </Link>
-        {" · "}
+        {' · '}
         <Link to="/privacy" className="hover:text-slate-400">
           Privacy
         </Link>
-        {" · "}
+        {' · '}
         <a
           href="https://github.com/sarthakagrawal927/open-historia"
           aria-label="GitHub repository"

@@ -1,25 +1,23 @@
-
-import React, { useEffect, useRef, useState } from "react";
-import type { StoryPath } from "@/lib/types";
-import { PRESETS } from "@/lib/presets";
+import React, { useEffect, useRef, useState } from 'react';
+import type { StoryPath } from '@/lib/types';
+import { PRESETS } from '@/lib/presets';
 
 interface StoryPathProps {
   storyPath: StoryPath;
   completedStepIds: string[];
 }
 
-export default function StoryPath({
-  storyPath,
-  completedStepIds,
-}: StoryPathProps) {
+export default function StoryPath({ storyPath, completedStepIds }: StoryPathProps) {
   const [minimized, setMinimized] = useState(false);
   const [showAllSteps, setShowAllSteps] = useState(false);
 
   // Determine current step: first step that isn't completed
-  const currentStep = storyPath.steps.find((step) => !completedStepIds.includes(step.id)) || storyPath.steps[storyPath.steps.length - 1];
+  const currentStep =
+    storyPath.steps.find((step) => !completedStepIds.includes(step.id)) ||
+    storyPath.steps[storyPath.steps.length - 1];
 
-  const currentStepIndex = storyPath.steps.findIndex(s => s.id === currentStep.id);
-  const progress = ((currentStepIndex) / storyPath.steps.length) * 100;
+  const currentStepIndex = storyPath.steps.findIndex((s) => s.id === currentStep.id);
+  const progress = (currentStepIndex / storyPath.steps.length) * 100;
   const previousStep = currentStepIndex > 0 ? storyPath.steps[currentStepIndex - 1] : null;
   const allDone = completedStepIds.length >= storyPath.steps.length;
 
@@ -46,7 +44,7 @@ export default function StoryPath({
         onClick={() => setMinimized(false)}
         className="campaign-story fixed top-20 left-2 sm:left-4 z-40 px-3 py-2 bg-slate-900/90 border border-amber-500/30 rounded-lg shadow-xl backdrop-blur-md flex items-center gap-2 hover:bg-slate-800 transition-colors group max-w-[calc(100vw-1rem)]"
       >
-        <span className="text-amber-400 text-sm">{"\u270E"}</span>
+        <span className="text-amber-400 text-sm">{'\u270E'}</span>
         <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest group-hover:text-amber-200">
           Story: {storyPath.name}
         </span>
@@ -59,7 +57,7 @@ export default function StoryPath({
       {/* Header */}
       <div className="bg-amber-900/20 px-3 py-2 border-b border-amber-900/40 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-amber-400 text-sm">{"\u270E"}</span>
+          <span className="text-amber-400 text-sm">{'\u270E'}</span>
           <span className="text-amber-200 font-bold text-[10px] uppercase tracking-wider">
             Guided Story
           </span>
@@ -68,15 +66,13 @@ export default function StoryPath({
           onClick={() => setMinimized(true)}
           className="text-slate-500 hover:text-amber-400 transition-colors"
         >
-          {"\u2014"}
+          {'\u2014'}
         </button>
       </div>
 
       <div className="campaign-story-body p-3">
         <div className="flex items-baseline justify-between mb-2">
-          <h3 className="text-slate-100 font-serif font-bold text-sm truncate">
-            {storyPath.name}
-          </h3>
+          <h3 className="text-slate-100 font-serif font-bold text-sm truncate">{storyPath.name}</h3>
           <span className="text-slate-500 text-[9px] uppercase tracking-wider shrink-0 ml-2">
             {completedStepIds.length}/{storyPath.steps.length}
           </span>
@@ -85,7 +81,7 @@ export default function StoryPath({
         {/* Progress bar */}
         <div className="w-full h-1 bg-slate-800 rounded-full mb-3 overflow-hidden">
           <div
-            className={`h-full bg-amber-500 transition-all duration-500 ${stepJustChanged ? "animate-pulse" : ""}`}
+            className={`h-full bg-amber-500 transition-all duration-500 ${stepJustChanged ? 'animate-pulse' : ''}`}
             style={{ width: `${allDone ? 100 : progress}%` }}
           />
         </div>
@@ -93,7 +89,7 @@ export default function StoryPath({
         {/* Just-completed step context (only when a previous step exists) */}
         {previousStep && completedStepIds.includes(previousStep.id) && (
           <div
-            className={`mb-2 flex items-center gap-1.5 text-[9px] text-emerald-400/80 ${stepJustChanged ? "animate-slide-down" : ""}`}
+            className={`mb-2 flex items-center gap-1.5 text-[9px] text-emerald-400/80 ${stepJustChanged ? 'animate-slide-down' : ''}`}
             title={previousStep.description}
           >
             <span className="text-emerald-500">✓</span>
@@ -107,17 +103,15 @@ export default function StoryPath({
           key={currentStep.id}
           className={`bg-slate-900/50 border rounded-lg p-2.5 transition-all duration-500 ${
             stepJustChanged
-              ? "border-amber-500/60 shadow-[0_0_18px_0_rgba(245,158,11,0.25)]"
-              : "border-slate-800"
+              ? 'border-amber-500/60 shadow-[0_0_18px_0_rgba(245,158,11,0.25)]'
+              : 'border-slate-800'
           }`}
         >
           <div className="flex items-center justify-between mb-1.5 gap-2">
             <span className="text-amber-400 font-bold text-[10px] uppercase truncate">
-              {allDone ? "Complete" : `Step ${currentStepIndex + 1}`}: {currentStep.title}
+              {allDone ? 'Complete' : `Step ${currentStepIndex + 1}`}: {currentStep.title}
             </span>
-            <span className="text-slate-600 text-[9px] shrink-0">
-              Year {currentStep.year}
-            </span>
+            <span className="text-slate-600 text-[9px] shrink-0">Year {currentStep.year}</span>
           </div>
 
           <p className="text-slate-300 text-[11px] leading-relaxed mb-2">
@@ -150,7 +144,7 @@ export default function StoryPath({
         <button
           onClick={() => setShowAllSteps((v) => !v)}
           className="mt-3 w-full flex justify-between gap-1 group"
-          aria-label={showAllSteps ? "Collapse step list" : "Expand step list"}
+          aria-label={showAllSteps ? 'Collapse step list' : 'Expand step list'}
           aria-expanded={showAllSteps}
         >
           {storyPath.steps.map((step) => {
@@ -161,7 +155,11 @@ export default function StoryPath({
               <div
                 key={step.id}
                 className={`flex-1 h-1 rounded-full transition-colors ${
-                  isCompleted ? "bg-amber-500" : isCurrent ? "bg-amber-500/40 group-hover:bg-amber-500/60" : "bg-slate-800 group-hover:bg-slate-700"
+                  isCompleted
+                    ? 'bg-amber-500'
+                    : isCurrent
+                      ? 'bg-amber-500/40 group-hover:bg-amber-500/60'
+                      : 'bg-slate-800 group-hover:bg-slate-700'
                 }`}
                 title={step.title}
               />
@@ -178,11 +176,11 @@ export default function StoryPath({
                 <li
                   key={step.id}
                   className={`flex items-center gap-1.5 text-[10px] leading-snug ${
-                    isCurrent ? "text-amber-200" : isCompleted ? "text-slate-400" : "text-slate-600"
+                    isCurrent ? 'text-amber-200' : isCompleted ? 'text-slate-400' : 'text-slate-600'
                   }`}
                 >
                   <span className="w-3 text-center shrink-0">
-                    {isCompleted ? "✓" : isCurrent ? "▶" : i + 1}
+                    {isCompleted ? '✓' : isCurrent ? '▶' : i + 1}
                   </span>
                   <span className="truncate flex-1">{step.title}</span>
                   <span className="text-slate-700 text-[9px] shrink-0">{step.year}</span>
@@ -210,18 +208,16 @@ export default function StoryPath({
 
 function SuggestedNext({ ids }: { ids: string[] }) {
   const suggestions = ids
-    .map(id => PRESETS.find(p => p.id === id))
-    .filter(Boolean) as import("@/lib/types").Preset[];
+    .map((id) => PRESETS.find((p) => p.id === id))
+    .filter(Boolean) as import('@/lib/types').Preset[];
 
   if (suggestions.length === 0) return null;
 
   return (
     <div className="mt-3 border-t border-emerald-900/40 pt-2">
-      <p className="text-[9px] text-emerald-500/80 uppercase tracking-wider mb-1.5">
-        Play next
-      </p>
+      <p className="text-[9px] text-emerald-500/80 uppercase tracking-wider mb-1.5">Play next</p>
       <ul className="space-y-1.5">
-        {suggestions.map(preset => (
+        {suggestions.map((preset) => (
           <li key={preset.id} className="flex gap-1.5 items-start">
             <span className="text-emerald-500/60 text-[9px] mt-0.5 shrink-0">▸</span>
             <div className="min-w-0">
@@ -235,9 +231,7 @@ function SuggestedNext({ ids }: { ids: string[] }) {
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-[9px] text-slate-700">
-        Start a new game to play these scenarios.
-      </p>
+      <p className="mt-2 text-[9px] text-slate-700">Start a new game to play these scenarios.</p>
     </div>
   );
 }

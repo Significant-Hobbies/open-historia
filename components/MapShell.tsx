@@ -1,6 +1,5 @@
-
-import React from "react";
-import { Link } from "react-router-dom";
+import type React from 'react';
+import { Link } from 'react-router-dom';
 
 // ---------------------------------------------------------------------------
 // Shared backdrop used by loading / error / empty states. A subtle
@@ -13,9 +12,7 @@ function StylizedGlobe({ pulsing = false }: { pulsing?: boolean }) {
   return (
     <svg
       viewBox="0 0 200 200"
-      className={`w-40 h-40 sm:w-48 sm:h-48 text-amber-500/70 ${
-        pulsing ? "animate-breathe" : ""
-      }`}
+      className={`w-40 h-40 sm:w-48 sm:h-48 text-amber-500/70 ${pulsing ? 'animate-breathe' : ''}`}
       aria-hidden="true"
     >
       <defs>
@@ -109,13 +106,11 @@ function StateFrame({ children }: { children: React.ReactNode }) {
         className="absolute inset-0 pointer-events-none opacity-[0.07]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(148,163,184,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.6) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+            'linear-gradient(rgba(148,163,184,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.6) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
       />
-      <div className="relative w-full max-w-lg mx-auto px-6 text-center">
-        {children}
-      </div>
+      <div className="relative w-full max-w-lg mx-auto px-6 text-center">{children}</div>
     </div>
   );
 }
@@ -129,14 +124,12 @@ export function MapLoadingState() {
           <h1 className="text-2xl tracking-[0.3em] uppercase text-amber-400 font-bold">
             Open Historia
           </h1>
-          <p className="mt-2 text-sm text-slate-400">
-            Charting the atlas…
-          </p>
+          <p className="mt-2 text-sm text-slate-400">Charting the atlas…</p>
         </div>
         <div className="w-48 h-1 rounded-full bg-slate-800 overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 animate-shimmer"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           />
         </div>
         <p className="text-[11px] uppercase tracking-widest text-slate-600">
@@ -162,15 +155,12 @@ export function MapUnavailableState({
           <p className="text-[11px] uppercase tracking-[0.3em] text-rose-400 font-bold">
             Atlas Offline
           </p>
-          <h1 className="mt-1 text-2xl text-slate-100 font-bold">
-            Map data is unavailable
-          </h1>
+          <h1 className="mt-1 text-2xl text-slate-100 font-bold">Map data is unavailable</h1>
           <p className="mt-3 text-sm text-slate-400 leading-relaxed">
-            The world topology asset failed to load. Open Historia renders
-            entirely from a bundled <span className="text-amber-300">TopoJSON</span> file
-            and <span className="text-amber-300">MapLibre GL</span> — no external
-            tile-server key is required — so this is usually a network or
-            deployment hiccup, not a missing credential.
+            The world topology asset failed to load. Open Historia renders entirely from a bundled{' '}
+            <span className="text-amber-300">TopoJSON</span> file and{' '}
+            <span className="text-amber-300">MapLibre GL</span> — no external tile-server key is
+            required — so this is usually a network or deployment hiccup, not a missing credential.
           </p>
         </div>
 
@@ -203,17 +193,16 @@ export function MapUnavailableState({
           </summary>
           <ul className="mt-2 text-xs text-slate-400 space-y-1 list-disc list-inside">
             <li>
-              <code className="text-amber-300">public/provinces-combined.json</code>{" "}
-              must be served at the site root.
+              <code className="text-amber-300">public/provinces-combined.json</code> must be served
+              at the site root.
             </li>
             <li>
-              <code className="text-amber-300">public/admin1-detail.json</code> is
-              lazy-loaded at zoom 5+ for state-level detail.
+              <code className="text-amber-300">public/admin1-detail.json</code> is lazy-loaded at
+              zoom 5+ for state-level detail.
             </li>
             <li>
-              The map itself uses MapLibre GL JS with a built-in style — no
-              Mapbox / MapTiler / Stadia key, no <code>NEXT_PUBLIC_MAP_*</code>{" "}
-              env var.
+              The map itself uses MapLibre GL JS with a built-in style — no Mapbox / MapTiler /
+              Stadia key, no <code>NEXT_PUBLIC_MAP_*</code> env var.
             </li>
           </ul>
         </details>

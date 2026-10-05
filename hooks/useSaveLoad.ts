@@ -1,13 +1,12 @@
+import { useCallback, useEffect, useState } from 'react';
 
-import { useCallback,useEffect, useState } from "react";
-
-import { trackCoreAction } from "@/lib/analytics";
-import type { LogEntry } from "@/lib/game-storage";
-import { autoSave, saveGame } from "@/lib/game-storage";
-import type { GameConfig, GameEvent, GameState } from "@/lib/types";
+import { trackCoreAction } from '@/lib/analytics';
+import type { LogEntry } from '@/lib/game-storage';
+import { autoSave, saveGame } from '@/lib/game-storage';
+import type { GameConfig, GameEvent, GameState } from '@/lib/types';
 
 function uid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -20,7 +19,7 @@ export function useSaveLoad(deps: {
   events: GameEvent[];
   storySoFar: string;
   completedStepIds: string[];
-  addLog: (text: string, type?: LogEntry["type"]) => void;
+  addLog: (text: string, type?: LogEntry['type']) => void;
   refreshSavedGames: () => Promise<void>;
   initialGameIdLoaded: string | null;
 }) {
@@ -57,29 +56,36 @@ export function useSaveLoad(deps: {
       await saveGame(gameState, gameConfig, logs, id, events, storySoFar, completedStepIds);
       if (!currentGameId) {
         setCurrentGameId(id);
-        window.history.replaceState(null, "", `/play/${encodeURIComponent(id)}`);
+        window.history.replaceState(null, '', `/play/${encodeURIComponent(id)}`);
       }
       setLastSaveTime(Date.now());
       setShowSaveNotif(true);
       setTimeout(() => setShowSaveNotif(false), 2000);
       await refreshSavedGames();
-      trackCoreAction("game_saved");
-      addLog("Game saved.", "success");
+      trackCoreAction('game_saved');
+      addLog('Game saved.', 'success');
       return true;
     } catch (error) {
-      addLog(
-        `Save failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-        "error"
-      );
+      addLog(`Save failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
       return false;
     }
-  }, [gameState, gameConfig, logs, events, storySoFar, completedStepIds, currentGameId, refreshSavedGames, addLog]);
+  }, [
+    gameState,
+    gameConfig,
+    logs,
+    events,
+    storySoFar,
+    completedStepIds,
+    currentGameId,
+    refreshSavedGames,
+    addLog,
+  ]);
 
   const handleSaveAndExit = useCallback(async (): Promise<boolean> => {
     if (!gameState || !gameConfig) return false;
     if (!(await handleSaveGame())) return false;
     setCurrentGameId(null);
-    window.history.replaceState(null, "", "/play");
+    window.history.replaceState(null, '', '/play');
     return true;
   }, [gameState, gameConfig, handleSaveGame]);
 
@@ -97,7 +103,16 @@ export function useSaveLoad(deps: {
   // Auto-save
   useEffect(() => {
     if (!gameState || !gameConfig) return;
-    autoSave(gameState, gameConfig, logs, events, 2000, currentGameId || "autosave", storySoFar, completedStepIds);
+    autoSave(
+      gameState,
+      gameConfig,
+      logs,
+      events,
+      2000,
+      currentGameId || 'autosave',
+      storySoFar,
+      completedStepIds
+    );
   }, [gameState, gameConfig, logs, events, currentGameId, storySoFar, completedStepIds]);
 
   return {

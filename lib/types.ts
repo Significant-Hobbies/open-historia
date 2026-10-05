@@ -1,8 +1,8 @@
-import type { LogEntry } from "./game-storage";
+import type { LogEntry } from './game-storage';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type GeoFeature = any;
 
-export type Provider = "local" | "free-ai" | "google" | "openai" | "anthropic" | "deepseek";
+export type Provider = 'local' | 'free-ai' | 'google' | 'openai' | 'anthropic' | 'deepseek';
 
 export interface GameConfig {
   year: number;
@@ -11,7 +11,7 @@ export interface GameConfig {
   apiKey: string;
   provider: Provider;
   model: string;
-  difficulty: "Sandbox" | "Easy" | "Realistic" | "Hardcore" | "Impossible";
+  difficulty: 'Sandbox' | 'Easy' | 'Realistic' | 'Hardcore' | 'Impossible';
   presetId?: string;
 }
 
@@ -40,17 +40,17 @@ export type Province = {
   isSubNational?: boolean;
 };
 
-export type MapTheme = "classic" | "cyberpunk" | "parchment" | "blueprint";
+export type MapTheme = 'classic' | 'cyberpunk' | 'parchment' | 'blueprint';
 
 export type GameEvent = {
   id: string;
   year: number;
   description: string;
-  type: "diplomacy" | "war" | "discovery" | "flavor" | "economy" | "crisis";
+  type: 'diplomacy' | 'war' | 'discovery' | 'flavor' | 'economy' | 'crisis';
 };
 
 // Diplomatic Relations
-export type RelationType = "neutral" | "friendly" | "allied" | "hostile" | "war" | "vassal";
+export type RelationType = 'neutral' | 'friendly' | 'allied' | 'hostile' | 'war' | 'vassal';
 
 export type DiplomaticRelation = {
   nationA: string;
@@ -67,12 +67,12 @@ export type ChatMessage = {
   content: string;
   timestamp: number;
   turnYear: number;
-  tone?: "friendly" | "neutral" | "hostile" | "threatening";
+  tone?: 'friendly' | 'neutral' | 'hostile' | 'threatening';
 };
 
 export type ChatThread = {
   id: string;
-  type: "bilateral" | "group";
+  type: 'bilateral' | 'group';
   participants: string[];
   name: string;
   messages: ChatMessage[];
@@ -104,9 +104,9 @@ export type Preset = {
   description: string;
   year: number;
   scenario: string;
-  difficulty: "Sandbox" | "Easy" | "Realistic" | "Hardcore" | "Impossible";
+  difficulty: 'Sandbox' | 'Easy' | 'Realistic' | 'Hardcore' | 'Impossible';
   suggestedNations: string[];
-  category: "historical" | "modern" | "alternate" | "fictional";
+  category: 'historical' | 'modern' | 'alternate' | 'fictional';
   icon: string;
   storyPath?: StoryPath;
 };
@@ -138,10 +138,10 @@ export type TimelineSnapshot = {
 // Advisor
 export type AdvisorMessage = {
   id: string;
-  role: "user" | "advisor";
+  role: 'user' | 'advisor';
   content: string;
   timestamp: number;
-  category?: "military" | "diplomacy" | "economy" | "domestic" | "general";
+  category?: 'military' | 'diplomacy' | 'economy' | 'domestic' | 'general';
 };
 
 // Enhanced GameState

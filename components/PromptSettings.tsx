@@ -1,15 +1,14 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 import {
   DEFAULT_PROMPT_OVERRIDES,
   loadPromptOverrides,
   type PromptOverrides,
   savePromptOverrides,
-} from "@/lib/prompt-overrides";
+} from '@/lib/prompt-overrides';
 
-export type { PromptOverrides } from "@/lib/prompt-overrides";
-export { loadPromptOverrides, savePromptOverrides } from "@/lib/prompt-overrides";
+export type { PromptOverrides } from '@/lib/prompt-overrides';
+export { loadPromptOverrides, savePromptOverrides } from '@/lib/prompt-overrides';
 
 const DEFAULTS = DEFAULT_PROMPT_OVERRIDES;
 
@@ -23,10 +22,10 @@ interface Props {
 }
 
 const FIELDS: { key: keyof PromptOverrides; label: string; rows: number }[] = [
-  { key: "gameMasterPreamble", label: "Game Master Preamble", rows: 4 },
-  { key: "adjudicationRules", label: "Adjudication Rules", rows: 10 },
-  { key: "diplomacyInstructions", label: "Diplomacy Instructions", rows: 5 },
-  { key: "advisorPersonality", label: "Advisor Personality", rows: 5 },
+  { key: 'gameMasterPreamble', label: 'Game Master Preamble', rows: 4 },
+  { key: 'adjudicationRules', label: 'Adjudication Rules', rows: 10 },
+  { key: 'diplomacyInstructions', label: 'Diplomacy Instructions', rows: 5 },
+  { key: 'advisorPersonality', label: 'Advisor Personality', rows: 5 },
 ];
 
 export default function PromptSettings({ open, onClose }: Props) {
@@ -67,9 +66,7 @@ export default function PromptSettings({ open, onClose }: Props) {
             Prompt Settings
           </h2>
           <div className="flex items-center gap-2">
-            {saved && (
-              <span className="text-emerald-400 text-xs">Saved</span>
-            )}
+            {saved && <span className="text-emerald-400 text-xs">Saved</span>}
             <button
               onClick={handleReset}
               className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded"
@@ -94,8 +91,8 @@ export default function PromptSettings({ open, onClose }: Props) {
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           <p className="text-xs text-slate-400">
-            Customize the AI prompt templates used by the Game Master, Diplomacy, and Advisor systems.
-            Changes apply to all future AI calls. Reset to restore original prompts.
+            Customize the AI prompt templates used by the Game Master, Diplomacy, and Advisor
+            systems. Changes apply to all future AI calls. Reset to restore original prompts.
           </p>
 
           {FIELDS.map(({ key, label, rows }) => (

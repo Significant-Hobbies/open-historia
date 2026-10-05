@@ -1,7 +1,6 @@
+import { useCallback, useState } from 'react';
 
-import { useCallback, useState } from "react";
-
-import { loadPromptOverrides } from "@/components/PromptSettings";
+import { loadPromptOverrides } from '@/components/PromptSettings';
 import type {
   ChatMessage,
   ChatThread,
@@ -9,12 +8,12 @@ import type {
   GameConfig,
   GameEvent,
   GameState,
-} from "@/lib/types";
+} from '@/lib/types';
 
 const MAX_MESSAGES_PER_THREAD = 100;
 
 function uid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -33,8 +32,8 @@ export function useDiplomacy(deps: {
   const [processingChat, setProcessingChat] = useState(false);
 
   const handleCreateThread = useCallback(
-    (type: "bilateral" | "group", participantIds: string[], name?: string) => {
-      const threadName = name || participantIds.join(", ");
+    (type: 'bilateral' | 'group', participantIds: string[], name?: string) => {
+      const threadName = name || participantIds.join(', ');
       const existing = chatThreads.find(
         (t) =>
           t.type === type &&
@@ -46,7 +45,7 @@ export function useDiplomacy(deps: {
       const newThread: ChatThread = {
         id: uid(),
         type,
-        participants: ["player", ...participantIds],
+        participants: ['player', ...participantIds],
         name: threadName,
         messages: [],
         unreadCount: 0,
@@ -65,8 +64,8 @@ export function useDiplomacy(deps: {
 
       const playerMsg: ChatMessage = {
         id: uid(),
-        senderId: "player",
-        senderName: gameState.players["player"].name,
+        senderId: 'player',
+        senderName: gameState.players['player'].name,
         content: message,
         timestamp: Date.now(),
         turnYear: gameState.turn,
@@ -76,20 +75,23 @@ export function useDiplomacy(deps: {
         prev.map((t) => {
           if (t.id !== threadId) return t;
           const msgs = [...t.messages, playerMsg];
-          return { ...t, messages: msgs.length > MAX_MESSAGES_PER_THREAD ? msgs.slice(-MAX_MESSAGES_PER_THREAD) : msgs };
+          return {
+            ...t,
+            messages:
+              msgs.length > MAX_MESSAGES_PER_THREAD ? msgs.slice(-MAX_MESSAGES_PER_THREAD) : msgs,
+          };
         })
       );
 
       try {
-        const targetNation =
-          thread.participants.find((p) => p !== "player") || thread.name;
+        const targetNation = thread.participants.find((p) => p !== 'player') || thread.name;
 
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message,
-            playerNation: gameState.players["player"].name,
+            playerNation: gameState.players['player'].name,
             targetNation,
             chatHistory: thread.messages.slice(-20).map((m) => ({
               sender: m.senderName,
@@ -101,11 +103,12 @@ export function useDiplomacy(deps: {
               scenario: gameConfig.scenario,
               difficulty: gameConfig.difficulty,
             },
-            relations: relations.find(
-              (r) =>
-                (r.nationA === "player" && r.nationB === targetNation) ||
-                (r.nationB === "player" && r.nationA === targetNation)
-            ) || null,
+            relations:
+              relations.find(
+                (r) =>
+                  (r.nationA === 'player' && r.nationB === targetNation) ||
+                  (r.nationB === 'player' && r.nationA === targetNation)
+              ) || null,
             recentEvents: events
               .slice(-10)
               .map((e) => ({ year: e.year, description: e.description })),
@@ -124,25 +127,29 @@ export function useDiplomacy(deps: {
           id: uid(),
           senderId: targetNation,
           senderName: targetNation,
-          content: data.message || "...",
+          content: data.message || '...',
           timestamp: Date.now(),
           turnYear: gameState.turn,
-          tone: data.tone || "neutral",
+          tone: data.tone || 'neutral',
         };
 
         setChatThreads((prev) =>
           prev.map((t) => {
             if (t.id !== threadId) return t;
             const msgs = [...t.messages, aiMsg];
-            return { ...t, messages: msgs.length > MAX_MESSAGES_PER_THREAD ? msgs.slice(-MAX_MESSAGES_PER_THREAD) : msgs };
+            return {
+              ...t,
+              messages:
+                msgs.length > MAX_MESSAGES_PER_THREAD ? msgs.slice(-MAX_MESSAGES_PER_THREAD) : msgs,
+            };
           })
         );
 
         if (data.relationChange) {
           const rel: DiplomaticRelation = {
-            nationA: gameState.players["player"].name,
+            nationA: gameState.players['player'].name,
             nationB: targetNation,
-            type: data.relationChange.newType || "neutral",
+            type: data.relationChange.newType || 'neutral',
             treaties: [],
           };
           setRelations((prev) => {
@@ -160,17 +167,15 @@ export function useDiplomacy(deps: {
         console.error(err);
         const errMsg: ChatMessage = {
           id: uid(),
-          senderId: "system",
-          senderName: "System",
-          content: "Communication channel disrupted. Try again.",
+          senderId: 'system',
+          senderName: 'System',
+          content: 'Communication channel disrupted. Try again.',
           timestamp: Date.now(),
           turnYear: gameState.turn,
-          tone: "hostile",
+          tone: 'hostile',
         };
         setChatThreads((prev) =>
-          prev.map((t) =>
-            t.id === threadId ? { ...t, messages: [...t.messages, errMsg] } : t
-          )
+          prev.map((t) => (t.id === threadId ? { ...t, messages: [...t.messages, errMsg] } : t))
         );
       } finally {
         setProcessingChat(false);

@@ -1,5 +1,5 @@
 const LOCAL_AI_URL =
-  process.env.LOCAL_AI_URL || process.env.CLI_BRIDGE_URL || "http://localhost:3456";
+  process.env.LOCAL_AI_URL || process.env.CLI_BRIDGE_URL || 'http://localhost:3456';
 
 /**
  * Call the local AI SSE server and collect the full response.
@@ -11,15 +11,15 @@ export async function callLocalAI(opts: {
   prompt: string;
   systemPrompt?: string;
 }): Promise<string> {
-  const { provider = "claude", model, prompt, systemPrompt } = opts;
+  const { provider = 'claude', model, prompt, systemPrompt } = opts;
 
   const res = await fetch(`${LOCAL_AI_URL}/api/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       provider,
       model: model || undefined,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
       systemPrompt: systemPrompt || undefined,
     }),
   });
@@ -31,24 +31,24 @@ export async function callLocalAI(opts: {
 
   // Read SSE stream and collect text chunks
   const reader = res.body?.getReader();
-  if (!reader) throw new Error("local-ai returned no readable stream");
+  if (!reader) throw new Error('local-ai returned no readable stream');
 
   const decoder = new TextDecoder();
-  let collected = "";
-  let buffer = "";
+  let collected = '';
+  let buffer = '';
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() || "";
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
 
     for (const line of lines) {
-      if (!line.startsWith("data: ")) continue;
+      if (!line.startsWith('data: ')) continue;
       const payload = line.slice(6).trim();
-      if (payload === "[DONE]") continue;
+      if (payload === '[DONE]') continue;
       try {
         const parsed = JSON.parse(payload);
         if (parsed.text) collected += parsed.text;

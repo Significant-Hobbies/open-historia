@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import StoryRoomPrototype from "@/components/StoryRoomPrototype";
+import StoryRoomPrototype from '@/components/StoryRoomPrototype';
 
 export default function StoryRoomPage() {
   return (
@@ -23,12 +23,12 @@ export default function StoryRoomPage() {
 
         <div className="mt-8 border-t border-slate-800 pt-6 text-[11px] text-slate-500 max-w-prose">
           <p>
-            StoryTunes prototype: submit/vote/canon, multi-round canon, branch archive with
-            replay and revive, and fixture-only AI co-author suggestions — isolated from
-            strategy-game state and saves.
+            StoryTunes prototype: submit/vote/canon, multi-round canon, branch archive with replay
+            and revive, and fixture-only AI co-author suggestions — isolated from strategy-game
+            state and saves.
           </p>
           <p className="mt-2">
-            Read the full product brief: <span className="text-amber-400">STORY-ROOMS.md</span>{" "}
+            Read the full product brief: <span className="text-amber-400">STORY-ROOMS.md</span>{' '}
             (open the file in the repo root).
           </p>
         </div>

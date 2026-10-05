@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default function PrivacyPage() {
   return (
@@ -38,14 +38,14 @@ export default function PrivacyPage() {
       <h2 className="mt-8 text-base font-semibold text-amber-500">LLM provider</h2>
       <p className="mt-2">
         When you take a turn the entire game state (you can inspect the JSON payload in your
-        browser&apos;s network tab) is sent to whichever provider you&apos;ve picked on setup.
-        Their privacy policy applies.
+        browser&apos;s network tab) is sent to whichever provider you&apos;ve picked on setup. Their
+        privacy policy applies.
       </p>
 
       <h2 className="mt-8 text-base font-semibold text-amber-500">Deletion</h2>
       <p className="mt-2">
-        Delete individual saves from the timeline panel, or revoke the Google OAuth grant in
-        your account settings to disconnect.
+        Delete individual saves from the timeline panel, or revoke the Google OAuth grant in your
+        account settings to disconnect.
       </p>
     </main>
   );
