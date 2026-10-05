@@ -13,6 +13,19 @@ import { parseAiTurnResponse } from "../../../lib/turn-parser";
 import { reserveWorkersAiCall, SharedAiBudgetError } from "../shared-ai-budget";
 import type { WorkerEnv } from "../../../lib/worker-env";
 import { resolveWorkersAiModel } from "../../../lib/workers-ai-model";
+import type { Provider } from "../../../lib/types";
+
+const SUPPORTED_PROVIDERS = new Set<Provider>([
+  "local",
+  "free-ai",
+  "google",
+  "openai",
+  "anthropic",
+  "deepseek",
+]);
+
+const hasUnsupportedProvider = (provider: unknown) =>
+  typeof provider === "string" && !SUPPORTED_PROVIDERS.has(provider as Provider);
 
 const DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview";
 const FALLBACK_GEMINI_MODELS = [
@@ -404,6 +417,9 @@ llm.post("/turn", async (c) => {
     if (!config || typeof config.provider !== "string") {
       return c.json({ error: "Provider config is required" }, 400);
     }
+    if (hasUnsupportedProvider(config.provider)) {
+      return c.json({ error: "Unsupported provider" }, 400);
+    }
 
     if (config.provider !== "local" && config.provider !== "free-ai" && !config.apiKey) {
       return c.json({ error: "API Key missing" }, 400);
@@ -544,6 +560,9 @@ llm.post("/chat", async (c) => {
       promptOverrides: rawPromptOverrides,
     } = body;
 
+    if (hasUnsupportedProvider(config?.provider)) {
+      return c.json({ error: "Unsupported provider" }, 400);
+    }
     const promptOverrides = sanitizePromptOverrides(rawPromptOverrides);
 
     if (config?.provider !== "local" && config?.provider !== "free-ai" && !config?.apiKey) {
@@ -629,6 +648,9 @@ llm.post("/advisor", async (c) => {
       promptOverrides,
     } = body;
 
+    if (hasUnsupportedProvider(config?.provider)) {
+      return c.json({ error: "Unsupported provider" }, 400);
+    }
     if (config?.provider !== "local" && config?.provider !== "free-ai" && !config?.apiKey) {
       return c.json({ error: "API Key missing" }, 400);
     }

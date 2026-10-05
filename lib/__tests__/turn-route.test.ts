@@ -107,7 +107,40 @@ describe('turn route through the real Workers AI adapter', () => {
       budgetEnv({ run })
     );
     expect(response.status).toBe(200);
+    expect(run).toHaveBeenCalledOnce();
     expect(run.mock.calls[0][1].response_format.json_schema.required).toEqual(required);
+  });
+
+  it.each([
+    [
+      '/turn',
+      {
+        command: 'Continue the synthetic campaign.',
+        gameState: { turn: 1939, players: { player: { name: 'Britain' } } },
+      },
+    ],
+    ['/chat', { message: 'Request aid.', playerNation: 'Britain', targetNation: 'France' }],
+    ['/advisor', { question: 'How can we provide aid?', playerNation: 'Britain' }],
+  ])('rejects an unsupported provider before calling an adapter for %s', async (path, input) => {
+    const run = vi.fn();
+    const response = await app.request(
+      path,
+      {
+        ...request,
+        body: JSON.stringify({
+          ...input,
+          config: {
+            provider: 'unsupported-private-sentinel',
+            apiKey: 'synthetic-placeholder',
+          },
+        }),
+      },
+      budgetEnv({ run })
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: 'Unsupported provider' });
+    expect(run).not.toHaveBeenCalled();
   });
 
   it('does not expose provider errors containing campaign prompts', async () => {
