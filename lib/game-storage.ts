@@ -344,7 +344,7 @@ async function cloudSaveGame(
 async function cloudLoadGame(id: string): Promise<SavedGame | null> {
   const res = await fetch(`/api/saves/${encodeURIComponent(id)}`);
   if (!res.ok) return null;
-  const data = await res.json();
+  const data = (await res.json()) as { save?: SavedGame };
   const save = data.save;
   if (!save) return null;
 
@@ -384,7 +384,7 @@ async function cloudLoadGame(id: string): Promise<SavedGame | null> {
 async function cloudListSavedGames(): Promise<SavedGame[]> {
   const res = await fetch("/api/saves");
   if (!res.ok) return [];
-  const data = await res.json();
+  const data = (await res.json()) as { saves?: Record<string, unknown>[] };
   // The listing endpoint returns metadata only (no full JSON blobs)
   // Convert to SavedGame-compatible shape for display
   return (data.saves || []).map(
@@ -505,7 +505,7 @@ export async function uploadLocalSavesToCloud(): Promise<number> {
   });
 
   if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
-  const data = await res.json();
+  const data = (await res.json()) as { uploaded?: number };
   return data.uploaded || 0;
 }
 
