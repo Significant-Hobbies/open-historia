@@ -504,7 +504,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--oh-fg-dimmer);
+  color: var(--oh-fg-dim);
 }
 
 .oh-foot-rule {
