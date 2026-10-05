@@ -9,6 +9,7 @@
 import '@fontsource-variable/playfair-display';
 import '@fontsource-variable/geist';
 import '@/styles/landing.css';
+import FleetFooter from '@/components/FleetFooter.astro';
 
 interface Props {
   title: string;
@@ -79,6 +80,7 @@ const structuredData = JSON.stringify({
   </head>
   <body class="antialiased">
     <slot />
+    <FleetFooter />
     <script
       defer
       src="https://health.sassmaker.com/tracker.js"
@@ -98,15 +100,21 @@ const structuredData = JSON.stringify({
     </script>
     <script
       is:inline
-      src="https://sassmaker.com/project-strip.js"
+      src="https://sassmaker.com/project-strip.js?v=precise-b0adaa67"
       data-project="open-historia"
+      data-theme="dark"
+      data-host-only="true"
       crossorigin="anonymous"
       defer
     ></script>
     <script
       is:inline
-      src="https://sassmaker.com/ai-chat-footer.js"
+      src="https://sassmaker.com/ai-chat-footer.js?v=precise-b0adaa67"
       data-name="Open Historia"
+      data-project="open-historia"
+      data-surface="web"
+      data-theme="dark"
+      data-host-only="true"
       crossorigin="anonymous"
       defer
     ></script>
