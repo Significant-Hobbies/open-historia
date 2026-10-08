@@ -569,6 +569,10 @@ fleet-footer-extension > .fleet-footer-navigation {
     width: 80px;
     flex: 0 0 auto;
   }
+
+  fleet-footer-extension > .fleet-footer-navigation {
+    align-items: flex-start;
+  }
 }
 
 /* ── Reduced motion ───────────────────────────────────────────────── */
