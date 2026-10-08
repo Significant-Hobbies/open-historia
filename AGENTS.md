@@ -137,5 +137,3 @@ pnpm db:migrate:remote  # apply reviewed migrations to production D1
 - Note any paid-AI use in the task or handoff when it materially affects cost, reproducibility, or future maintenance.
 
 <!-- FLEET-GUIDANCE:END -->
-
-## Active context
