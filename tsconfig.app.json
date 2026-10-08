@@ -24,11 +24,23 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": [
-    "src/main.tsx", "src/router.tsx", "src/RootLayout.tsx", "src/pages/**/*.tsx",
-    "components/**/*.ts", "components/**/*.tsx", "hooks/**/*.ts", "lib/**/*.ts", "vite-env.d.ts"
+    "src/main.tsx",
+    "src/router.tsx",
+    "src/RootLayout.tsx",
+    "src/pages/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "hooks/**/*.ts",
+    "lib/**/*.ts",
+    "vite-env.d.ts"
   ],
   "exclude": [
-    "node_modules", "e2e", "src/worker.ts", "src/worker/**/*.ts",
-    "**/*.test.ts", "lib/**/__tests__/**", "lib/worker-env.ts"
+    "node_modules",
+    "e2e",
+    "src/worker.ts",
+    "src/worker/**/*.ts",
+    "**/*.test.ts",
+    "lib/**/__tests__/**",
+    "lib/worker-env.ts"
   ]
 }

@@ -1,25 +1,21 @@
-import { isTimelineMemory } from "@/lib/timeline-memory";
+import { isTimelineMemory } from '@/lib/timeline-memory';
 
-import { useCallback,useState } from "react";
+import { useCallback, useState } from 'react';
 
-import type { LogEntry } from "@/lib/game-storage";
-import type {
-  DiplomaticRelation,
-  GameEvent,
-  GameState,
-  TimelineSnapshot,
-} from "@/lib/types";
+import type { LogEntry } from '@/lib/game-storage';
+import type { DiplomaticRelation, GameEvent, GameState, TimelineSnapshot } from '@/lib/types';
 
 export function useTimeline(deps: {
   gameState: GameState | null;
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>;
   setEvents: React.Dispatch<React.SetStateAction<GameEvent[]>>;
   setRelations: React.Dispatch<React.SetStateAction<DiplomaticRelation[]>>;
-  restoreMemory: (memory: NonNullable<TimelineSnapshot["memory"]>) => void;
+  restoreMemory: (memory: NonNullable<TimelineSnapshot['memory']>) => void;
   canRewind: () => boolean;
-  addLog: (text: string, type?: LogEntry["type"]) => void;
+  addLog: (text: string, type?: LogEntry['type']) => void;
 }) {
-  const { gameState, setGameState, setEvents, setRelations, restoreMemory, canRewind, addLog } = deps;
+  const { gameState, setGameState, setEvents, setRelations, restoreMemory, canRewind, addLog } =
+    deps;
 
   const [timelineSnapshots, setTimelineSnapshots] = useState<TimelineSnapshot[]>([]);
 
@@ -28,7 +24,10 @@ export function useTimeline(deps: {
       const snapshot = timelineSnapshots.find((s) => s.id === snapshotId);
       if (!snapshot || !gameState || !canRewind()) return false;
       if (!isTimelineMemory(snapshot.memory)) {
-        addLog("This older snapshot has no historical memory and cannot be rewound safely.", "error");
+        addLog(
+          'This older snapshot has no historical memory and cannot be rewound safely.',
+          'error'
+        );
         return false;
       }
 
@@ -49,15 +48,24 @@ export function useTimeline(deps: {
       restoreMemory(snapshot.memory);
       setEvents(snapshot.gameStateSlim.events);
       setRelations(snapshot.gameStateSlim.relations);
-      addLog(`Rewound to Year ${snapshot.turnYear}.`, "success");
+      addLog(`Rewound to Year ${snapshot.turnYear}.`, 'success');
       return true;
     },
-    [timelineSnapshots, gameState, setGameState, setEvents, setRelations, restoreMemory, canRewind, addLog]
+    [
+      timelineSnapshots,
+      gameState,
+      setGameState,
+      setEvents,
+      setRelations,
+      restoreMemory,
+      canRewind,
+      addLog,
+    ]
   );
 
   const handleTimelineBranch = useCallback(
     (snapshotId: string) => {
-      if (handleTimelineRewind(snapshotId)) addLog("Created alternate timeline branch.", "info");
+      if (handleTimelineRewind(snapshotId)) addLog('Created alternate timeline branch.', 'info');
     },
     [handleTimelineRewind, addLog]
   );

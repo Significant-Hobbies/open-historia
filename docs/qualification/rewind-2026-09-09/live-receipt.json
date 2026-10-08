@@ -75,12 +75,8 @@
     "lint": "passed"
   },
   "assets": {
-    "localEntry": [
-      "/assets/app-CH4jS2Ma.js"
-    ],
-    "publicEntry": [
-      "/assets/app-CH4jS2Ma.js"
-    ],
+    "localEntry": ["/assets/app-CH4jS2Ma.js"],
+    "publicEntry": ["/assets/app-CH4jS2Ma.js"],
     "parity": true
   }
 }
