@@ -1,16 +1,16 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
-import type { Context } from "hono";
-import { Hono } from "hono";
+import { and, desc, eq, inArray } from 'drizzle-orm';
+import type { Context } from 'hono';
+import { Hono } from 'hono';
 
-import { createAuth } from "../../../lib/auth";
-import { createDb } from "../../../lib/db";
-import { savedGame } from "../../../lib/db/schema";
-import type { WorkerEnv } from "../../../lib/worker-env";
+import { createAuth } from '../../../lib/auth';
+import { createDb } from '../../../lib/db';
+import { savedGame } from '../../../lib/db/schema';
+import type { WorkerEnv } from '../../../lib/worker-env';
 
 function stripApiKey(configJson: string): string {
   try {
     const config = JSON.parse(configJson);
-    config.apiKey = "";
+    config.apiKey = '';
     return JSON.stringify(config);
   } catch {
     return configJson;
@@ -28,10 +28,10 @@ async function requireSession(c: Context<{ Bindings: WorkerEnv }>) {
 
 const saves = new Hono<{ Bindings: WorkerEnv }>();
 
-saves.get("/", async (c) => {
+saves.get('/', async (c) => {
   const session = await requireSession(c);
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   const db = createDb(c.env);
@@ -58,37 +58,25 @@ saves.get("/", async (c) => {
   return c.json({ saves: rows });
 });
 
-saves.post("/", async (c) => {
+saves.post('/', async (c) => {
   const session = await requireSession(c);
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   const body = await c.req.json();
-  const {
-    id,
-    name,
-    timestamp,
-    version,
-    gameState,
-    gameConfig,
-    logs,
-    events,
-    storySoFar,
-  } = body;
+  const { id, name, timestamp, version, gameState, gameConfig, logs, events, storySoFar } = body;
 
   if (!id || !gameState || !gameConfig) {
-    return c.json({ error: "Missing required fields" }, 400);
+    return c.json({ error: 'Missing required fields' }, 400);
   }
 
   const gameConfigJson = stripApiKey(
-    typeof gameConfig === "string" ? gameConfig : JSON.stringify(gameConfig),
+    typeof gameConfig === 'string' ? gameConfig : JSON.stringify(gameConfig)
   );
-  const gameStateJson =
-    typeof gameState === "string" ? gameState : JSON.stringify(gameState);
-  const logsJson = typeof logs === "string" ? logs : JSON.stringify(logs || []);
-  const eventsJson =
-    typeof events === "string" ? events : JSON.stringify(events || []);
+  const gameStateJson = typeof gameState === 'string' ? gameState : JSON.stringify(gameState);
+  const logsJson = typeof logs === 'string' ? logs : JSON.stringify(logs || []);
+  const eventsJson = typeof events === 'string' ? events : JSON.stringify(events || []);
 
   let parsedConfig: Record<string, unknown> = {};
   try {
@@ -114,7 +102,7 @@ saves.post("/", async (c) => {
     .limit(1);
 
   if (existing.length > 0 && existing[0].userId !== session.user.id) {
-    return c.json({ error: "Save id already belongs to another account" }, 409);
+    return c.json({ error: 'Save id already belongs to another account' }, 409);
   }
 
   const row = {
@@ -122,7 +110,7 @@ saves.post("/", async (c) => {
     userId: session.user.id,
     name: name || null,
     timestamp: timestamp || now,
-    version: version || "2.0.0",
+    version: version || '2.0.0',
     gameStateJson,
     gameConfigJson,
     logsJson,
@@ -165,17 +153,17 @@ saves.post("/", async (c) => {
   return c.json({ ok: true, id });
 });
 
-saves.post("/upload", async (c) => {
+saves.post('/upload', async (c) => {
   const session = await requireSession(c);
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   const body = await c.req.json();
   const { saves: uploadSaves } = body;
 
   if (!Array.isArray(uploadSaves) || uploadSaves.length === 0) {
-    return c.json({ error: "No saves provided" }, 400);
+    return c.json({ error: 'No saves provided' }, 400);
   }
 
   let uploaded = 0;
@@ -186,10 +174,8 @@ saves.post("/upload", async (c) => {
   // to the previous per-save SELECT but collapsing N reads into one.
   const candidateIds = Array.from(
     new Set(
-      uploadSaves
-        .filter((s) => s.id && s.gameState && s.gameConfig)
-        .map((s) => s.id as string),
-    ),
+      uploadSaves.filter((s) => s.id && s.gameState && s.gameConfig).map((s) => s.id as string)
+    )
   );
   const existingOwners = new Map<string, string>();
   if (candidateIds.length > 0) {
@@ -206,20 +192,13 @@ saves.post("/upload", async (c) => {
     if (!save.id || !save.gameState || !save.gameConfig) continue;
 
     const gameConfigJson = stripApiKey(
-      typeof save.gameConfig === "string"
-        ? save.gameConfig
-        : JSON.stringify(save.gameConfig),
+      typeof save.gameConfig === 'string' ? save.gameConfig : JSON.stringify(save.gameConfig)
     );
     const gameStateJson =
-      typeof save.gameState === "string"
-        ? save.gameState
-        : JSON.stringify(save.gameState);
-    const logsJson =
-      typeof save.logs === "string" ? save.logs : JSON.stringify(save.logs || []);
+      typeof save.gameState === 'string' ? save.gameState : JSON.stringify(save.gameState);
+    const logsJson = typeof save.logs === 'string' ? save.logs : JSON.stringify(save.logs || []);
     const eventsJson =
-      typeof save.events === "string"
-        ? save.events
-        : JSON.stringify(save.events || []);
+      typeof save.events === 'string' ? save.events : JSON.stringify(save.events || []);
 
     let parsedConfig: Record<string, unknown> = {};
     try {
@@ -248,7 +227,7 @@ saves.post("/upload", async (c) => {
       userId: session.user.id,
       name: save.name || null,
       timestamp: save.timestamp || now,
-      version: save.version || "2.0.0",
+      version: save.version || '2.0.0',
       gameStateJson,
       gameConfigJson,
       logsJson,
@@ -296,13 +275,13 @@ saves.post("/upload", async (c) => {
   return c.json({ ok: true, uploaded });
 });
 
-saves.get("/:id", async (c) => {
+saves.get('/:id', async (c) => {
   const session = await requireSession(c);
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
-  const id = c.req.param("id");
+  const id = c.req.param('id');
   const db = createDb(c.env);
 
   const rows = await db
@@ -312,7 +291,7 @@ saves.get("/:id", async (c) => {
     .limit(1);
 
   if (rows.length === 0) {
-    return c.json({ error: "Not found" }, 404);
+    return c.json({ error: 'Not found' }, 404);
   }
 
   const row = rows[0];
@@ -330,13 +309,13 @@ saves.get("/:id", async (c) => {
   });
 });
 
-saves.delete("/:id", async (c) => {
+saves.delete('/:id', async (c) => {
   const session = await requireSession(c);
   if (!session) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
-  const id = c.req.param("id");
+  const id = c.req.param('id');
   const db = createDb(c.env);
 
   await db

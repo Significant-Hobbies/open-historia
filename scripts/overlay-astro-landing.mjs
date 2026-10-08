@@ -2,16 +2,16 @@
 // Copies the Astro landing build over dist/index.html so GET / serves the
 // static marketing page while the Vite SPA lives at dist/app.html.
 
-import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
-const ASTRO_DIST = resolve("landing-astro/dist");
-const TARGET = resolve("dist");
+const ASTRO_DIST = resolve('landing-astro/dist');
+const TARGET = resolve('dist');
 
-const PROTECTED_PREFIXES = ["assets/", "app.html"];
+const PROTECTED_PREFIXES = ['assets/', 'app.html'];
 
-async function walk(dir, rel = "") {
+async function walk(dir, rel = '') {
   const entries = await readdir(dir, { withFileTypes: true });
   const out = [];
   for (const e of entries) {
@@ -27,12 +27,10 @@ async function walk(dir, rel = "") {
 }
 
 async function mergeHeaders(astroHeadersPath, targetHeadersPath) {
-  const astroHeaders = existsSync(astroHeadersPath)
-    ? await readFile(astroHeadersPath, "utf8")
-    : "";
+  const astroHeaders = existsSync(astroHeadersPath) ? await readFile(astroHeadersPath, 'utf8') : '';
   const targetHeaders = existsSync(targetHeadersPath)
-    ? await readFile(targetHeadersPath, "utf8")
-    : "";
+    ? await readFile(targetHeadersPath, 'utf8')
+    : '';
   if (!astroHeaders) return false;
   const merged = `# --- from landing-astro/dist/_headers ---\n${astroHeaders.trim()}\n\n# --- from Vite build ---\n${targetHeaders.trim()}\n`;
   await writeFile(targetHeadersPath, merged);
@@ -41,11 +39,11 @@ async function mergeHeaders(astroHeadersPath, targetHeadersPath) {
 
 async function main() {
   if (!existsSync(ASTRO_DIST)) {
-    console.warn("[overlay-astro] no landing-astro/dist — skipping");
+    console.warn('[overlay-astro] no landing-astro/dist — skipping');
     return;
   }
   if (!existsSync(TARGET)) {
-    console.error("[overlay-astro] no dist/ — run vite build first");
+    console.error('[overlay-astro] no dist/ — run vite build first');
     process.exit(1);
   }
 
@@ -58,8 +56,8 @@ async function main() {
       skipped += 1;
       continue;
     }
-    if (rel === "_headers") {
-      await mergeHeaders(src, join(TARGET, "_headers"));
+    if (rel === '_headers') {
+      await mergeHeaders(src, join(TARGET, '_headers'));
       continue;
     }
     const dest = join(TARGET, rel);
@@ -69,11 +67,11 @@ async function main() {
   }
 
   console.log(
-    `[overlay-astro] copied ${copied} file(s) from landing-astro/dist → dist/, skipped ${skipped} protected path(s)`,
+    `[overlay-astro] copied ${copied} file(s) from landing-astro/dist → dist/, skipped ${skipped} protected path(s)`
   );
 }
 
 main().catch((err) => {
-  console.error("[overlay-astro] fatal:", err);
+  console.error('[overlay-astro] fatal:', err);
   process.exit(1);
 });

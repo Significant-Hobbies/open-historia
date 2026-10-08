@@ -1,11 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from 'react-router-dom';
 
-import RootLayout from "./RootLayout";
-import AboutPage from "./pages/AboutPage";
-import GamePage from "./pages/GamePage";
-import NotFoundPage from "./pages/NotFoundPage";
-import PaxHistoriaAlternativePage from "./pages/PaxHistoriaAlternativePage";
-import PrivacyPage from "./pages/PrivacyPage";
+import RootLayout from './RootLayout';
+import AboutPage from './pages/AboutPage';
+import GamePage from './pages/GamePage';
+import NotFoundPage from './pages/NotFoundPage';
+import PaxHistoriaAlternativePage from './pages/PaxHistoriaAlternativePage';
+import PrivacyPage from './pages/PrivacyPage';
 
 // NOTE: Story Rooms (/story-room) was archived on 2026-07-02 — the local-only
 // prototype split polish from the primary grand-strategy experience and had no
@@ -15,15 +15,15 @@ import PrivacyPage from "./pages/PrivacyPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <RootLayout />,
     children: [
-      { path: "play", element: <GamePage /> },
-      { path: "play/:id", element: <GamePage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "privacy", element: <PrivacyPage /> },
-      { path: "pax-historia-alternative", element: <PaxHistoriaAlternativePage /> },
-      { path: "*", element: <NotFoundPage /> },
+      { path: 'play', element: <GamePage /> },
+      { path: 'play/:id', element: <GamePage /> },
+      { path: 'about', element: <AboutPage /> },
+      { path: 'privacy', element: <PrivacyPage /> },
+      { path: 'pax-historia-alternative', element: <PaxHistoriaAlternativePage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);

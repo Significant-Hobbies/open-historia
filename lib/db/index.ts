@@ -1,6 +1,6 @@
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle } from 'drizzle-orm/d1';
 
-import * as schema from "./schema";
+import * as schema from './schema';
 
 export type DbEnv = {
   DB: Parameters<typeof drizzle>[0];

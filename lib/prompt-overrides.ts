@@ -5,7 +5,7 @@ export interface PromptOverrides {
   advisorPersonality: string;
 }
 
-export const PROMPT_OVERRIDE_STORAGE_KEY = "open-historia-prompt-overrides";
+export const PROMPT_OVERRIDE_STORAGE_KEY = 'open-historia-prompt-overrides';
 
 export const DEFAULT_PROMPT_OVERRIDES: PromptOverrides = {
   gameMasterPreamble: `You are the GAME MASTER of "Open Historia", a grand strategy simulation. You simulate the world -- adjudicating actions, voicing nations, and driving consequences. The world is alive: nations pursue their own agendas independently of the player.`,
@@ -27,7 +27,7 @@ Think in terms of grand strategy across military, diplomatic, economic, and dome
 };
 
 export function loadPromptOverrides(): PromptOverrides {
-  if (typeof window === "undefined") return DEFAULT_PROMPT_OVERRIDES;
+  if (typeof window === 'undefined') return DEFAULT_PROMPT_OVERRIDES;
   try {
     const raw = localStorage.getItem(PROMPT_OVERRIDE_STORAGE_KEY);
     if (!raw) return DEFAULT_PROMPT_OVERRIDES;
@@ -39,6 +39,6 @@ export function loadPromptOverrides(): PromptOverrides {
 }
 
 export function savePromptOverrides(overrides: PromptOverrides): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   localStorage.setItem(PROMPT_OVERRIDE_STORAGE_KEY, JSON.stringify(overrides));
 }

@@ -1,11 +1,11 @@
-import path from "path";
+import path from 'path';
 
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: "node",
-    include: ["lib/**/*.test.ts", "lib/**/__tests__/**/*.test.ts"],
+    environment: 'node',
+    include: ['lib/**/*.test.ts', 'lib/**/__tests__/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       include: ['lib/**/*.{ts,tsx}'],
@@ -25,7 +25,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./"),
+      '@': path.resolve(__dirname, './'),
     },
   },
 });
