@@ -1,13 +1,6 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import type { ChatMessage, ChatThread, Player,Province } from "@/lib/types";
+import type { ChatMessage, ChatThread, Player, Province } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -20,11 +13,7 @@ interface DiplomacyChatProps {
   playerNationName: string;
   currentYear: number;
   onSendMessage: (threadId: string, message: string) => void;
-  onCreateThread: (
-    type: "bilateral" | "group",
-    participantIds: string[],
-    name?: string,
-  ) => void;
+  onCreateThread: (type: 'bilateral' | 'group', participantIds: string[], name?: string) => void;
   selectedProvinceId: string | number | null;
   processing: boolean;
 }
@@ -33,45 +22,45 @@ interface DiplomacyChatProps {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function toneBorderColor(tone?: ChatMessage["tone"]): string {
+function toneBorderColor(tone?: ChatMessage['tone']): string {
   switch (tone) {
-    case "friendly":
-      return "border-emerald-500";
-    case "hostile":
-      return "border-orange-500";
-    case "threatening":
-      return "border-red-500 animate-pulse";
-    case "neutral":
+    case 'friendly':
+      return 'border-emerald-500';
+    case 'hostile':
+      return 'border-orange-500';
+    case 'threatening':
+      return 'border-red-500 animate-pulse';
+    case 'neutral':
     default:
-      return "border-slate-600";
+      return 'border-slate-600';
   }
 }
 
-function toneDotColor(tone?: ChatMessage["tone"]): string {
+function toneDotColor(tone?: ChatMessage['tone']): string {
   switch (tone) {
-    case "friendly":
-      return "bg-emerald-400";
-    case "hostile":
-      return "bg-orange-400";
-    case "threatening":
-      return "bg-red-500 animate-pulse";
-    case "neutral":
+    case 'friendly':
+      return 'bg-emerald-400';
+    case 'hostile':
+      return 'bg-orange-400';
+    case 'threatening':
+      return 'bg-red-500 animate-pulse';
+    case 'neutral':
     default:
-      return "bg-slate-500";
+      return 'bg-slate-500';
   }
 }
 
-function toneLabel(tone?: ChatMessage["tone"]): string {
+function toneLabel(tone?: ChatMessage['tone']): string {
   switch (tone) {
-    case "friendly":
-      return "Friendly";
-    case "hostile":
-      return "Hostile";
-    case "threatening":
-      return "Threatening";
-    case "neutral":
+    case 'friendly':
+      return 'Friendly';
+    case 'hostile':
+      return 'Hostile';
+    case 'threatening':
+      return 'Threatening';
+    case 'neutral':
     default:
-      return "Neutral";
+      return 'Neutral';
   }
 }
 
@@ -79,14 +68,14 @@ function toneLabel(tone?: ChatMessage["tone"]): string {
 function getForeignNations(
   provinces: Province[],
   players: Record<string, Player>,
-  playerNationName: string,
+  playerNationName: string
 ): { id: string; name: string; color: string }[] {
   const seen = new Set<string>();
   const nations: { id: string; name: string; color: string }[] = [];
 
   // First add AI-owned nations
   for (const p of provinces) {
-    if (p.ownerId && p.ownerId !== "player" && !seen.has(p.ownerId)) {
+    if (p.ownerId && p.ownerId !== 'player' && !seen.has(p.ownerId)) {
       seen.add(p.ownerId);
       const player = players[p.ownerId];
       if (player) {
@@ -100,8 +89,8 @@ function getForeignNations(
   for (const p of provinces) {
     if (
       p.name !== playerNationName &&
-      !p.name.startsWith("Region") &&
-      p.name !== "Antarctica" &&
+      !p.name.startsWith('Region') &&
+      p.name !== 'Antarctica' &&
       !seen.has(p.name) &&
       p.resources.population > 20
     ) {
@@ -122,7 +111,7 @@ function formatYear(year: number): string {
 /** Truncate a string to a max length */
 function truncate(str: string, max: number): string {
   if (str.length <= max) return str;
-  return str.slice(0, max - 1) + "\u2026";
+  return str.slice(0, max - 1) + '\u2026';
 }
 
 // ---------------------------------------------------------------------------
@@ -137,14 +126,12 @@ function NewChatModal({
 }: {
   foreignNations: { id: string; name: string; color: string }[];
   onClose: () => void;
-  onCreateThread: DiplomacyChatProps["onCreateThread"];
+  onCreateThread: DiplomacyChatProps['onCreateThread'];
 }) {
-  const [mode, setMode] = useState<"bilateral" | "group">("bilateral");
-  const [selectedNation, setSelectedNation] = useState<string>("");
-  const [selectedNations, setSelectedNations] = useState<Set<string>>(
-    new Set(),
-  );
-  const [groupName, setGroupName] = useState("");
+  const [mode, setMode] = useState<'bilateral' | 'group'>('bilateral');
+  const [selectedNation, setSelectedNation] = useState<string>('');
+  const [selectedNations, setSelectedNations] = useState<Set<string>>(new Set());
+  const [groupName, setGroupName] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Close on click outside
@@ -154,22 +141,18 @@ function NewChatModal({
         onClose();
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, [onClose]);
 
   const handleCreate = () => {
-    if (mode === "bilateral") {
+    if (mode === 'bilateral') {
       if (!selectedNation) return;
-      onCreateThread("bilateral", [selectedNation]);
+      onCreateThread('bilateral', [selectedNation]);
       onClose();
     } else {
       if (selectedNations.size < 1) return;
-      onCreateThread(
-        "group",
-        Array.from(selectedNations),
-        groupName.trim() || undefined,
-      );
+      onCreateThread('group', Array.from(selectedNations), groupName.trim() || undefined);
       onClose();
     }
   };
@@ -195,6 +178,7 @@ function NewChatModal({
             New Channel
           </h3>
           <button
+            type="button"
             onClick={onClose}
             className="text-slate-500 hover:text-slate-300 transition-colors text-lg leading-none"
             aria-label="Close"
@@ -206,21 +190,23 @@ function NewChatModal({
         {/* Mode Tabs */}
         <div className="flex border-b border-slate-800">
           <button
-            onClick={() => setMode("bilateral")}
+            type="button"
+            onClick={() => setMode('bilateral')}
             className={`flex-1 text-xs font-bold uppercase py-2 transition-colors ${
-              mode === "bilateral"
-                ? "text-amber-400 border-b-2 border-amber-500 bg-slate-800/30"
-                : "text-slate-500 hover:text-slate-300"
+              mode === 'bilateral'
+                ? 'text-amber-400 border-b-2 border-amber-500 bg-slate-800/30'
+                : 'text-slate-500 hover:text-slate-300'
             }`}
           >
             Bilateral
           </button>
           <button
-            onClick={() => setMode("group")}
+            type="button"
+            onClick={() => setMode('group')}
             className={`flex-1 text-xs font-bold uppercase py-2 transition-colors ${
-              mode === "group"
-                ? "text-amber-400 border-b-2 border-amber-500 bg-slate-800/30"
-                : "text-slate-500 hover:text-slate-300"
+              mode === 'group'
+                ? 'text-amber-400 border-b-2 border-amber-500 bg-slate-800/30'
+                : 'text-slate-500 hover:text-slate-300'
             }`}
           >
             Group
@@ -229,12 +215,16 @@ function NewChatModal({
 
         {/* Content */}
         <div className="p-4 space-y-3 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-          {mode === "bilateral" ? (
+          {mode === 'bilateral' ? (
             <>
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              <label
+                htmlFor="diplomacy-nation"
+                className="text-[10px] font-bold text-slate-500 uppercase tracking-wider"
+              >
                 Select Nation
               </label>
               <select
+                id="diplomacy-nation"
                 value={selectedNation}
                 onChange={(e) => setSelectedNation(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-200 outline-none focus:border-amber-500 transition-colors"
@@ -249,26 +239,30 @@ function NewChatModal({
             </>
           ) : (
             <>
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              <label
+                htmlFor="diplomacy-channel"
+                className="text-[10px] font-bold text-slate-500 uppercase tracking-wider"
+              >
                 Channel Name
               </label>
               <input
+                id="diplomacy-channel"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 placeholder="e.g. NATO Summit"
                 className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-200 outline-none focus:border-amber-500 transition-colors placeholder-slate-600"
               />
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2 block">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-2 block">
                 Select Nations
-              </label>
+              </span>
               <div className="space-y-1">
                 {foreignNations.map((n) => (
                   <label
                     key={n.id}
                     className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors ${
                       selectedNations.has(n.name)
-                        ? "bg-amber-900/30 border border-amber-700/50"
-                        : "hover:bg-slate-800/50 border border-transparent"
+                        ? 'bg-amber-900/30 border border-amber-700/50'
+                        : 'hover:bg-slate-800/50 border border-transparent'
                     }`}
                   >
                     <input
@@ -283,9 +277,7 @@ function NewChatModal({
                     />
                     <span className="text-sm text-slate-200">{n.name}</span>
                     {selectedNations.has(n.name) && (
-                      <span className="ml-auto text-amber-400 text-xs">
-                        &#10003;
-                      </span>
+                      <span className="ml-auto text-amber-400 text-xs">&#10003;</span>
                     )}
                   </label>
                 ))}
@@ -297,12 +289,9 @@ function NewChatModal({
         {/* Action */}
         <div className="p-4 border-t border-slate-800">
           <button
+            type="button"
             onClick={handleCreate}
-            disabled={
-              mode === "bilateral"
-                ? !selectedNation
-                : selectedNations.size < 1
-            }
+            disabled={mode === 'bilateral' ? !selectedNation : selectedNations.size < 1}
             className="w-full py-2 bg-amber-700 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider rounded transition-colors"
           >
             Open Channel
@@ -331,37 +320,32 @@ function ThreadListItem({
 
   // For bilateral threads, show the other participant's name
   const displayName =
-    thread.type === "bilateral"
+    thread.type === 'bilateral'
       ? thread.participants.find((p) => p !== playerNationName) || thread.name
       : thread.name;
 
   // Find a color for the thread icon
   const otherParticipant =
-    thread.type === "bilateral"
-      ? thread.participants.find((p) => p !== playerNationName)
-      : null;
+    thread.type === 'bilateral' ? thread.participants.find((p) => p !== playerNationName) : null;
 
   // Try to find the player color by matching name
-  let dotColor = "#6b7280"; // default slate-500
+  let dotColor = '#6b7280'; // default slate-500
   if (otherParticipant) {
-    const matched = Object.values(players).find(
-      (pl) => pl.name === otherParticipant,
-    );
+    const matched = Object.values(players).find((pl) => pl.name === otherParticipant);
     if (matched) dotColor = matched.color;
   }
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`w-full text-left px-3 py-2.5 flex items-start gap-2.5 transition-colors border-b border-slate-800/60 group ${
-        isActive
-          ? "bg-slate-800/70"
-          : "hover:bg-slate-800/40"
+        isActive ? 'bg-slate-800/70' : 'hover:bg-slate-800/40'
       }`}
     >
       {/* Icon / Color dot */}
       <div className="shrink-0 pt-0.5">
-        {thread.type === "group" ? (
+        {thread.type === 'group' ? (
           <div className="w-5 h-5 rounded bg-slate-700 flex items-center justify-center text-[10px] text-amber-400 font-bold">
             G
           </div>
@@ -378,7 +362,7 @@ function ThreadListItem({
         <div className="flex items-center justify-between gap-2">
           <span
             className={`text-sm font-bold truncate ${
-              isActive ? "text-amber-400" : "text-slate-200"
+              isActive ? 'text-amber-400' : 'text-slate-200'
             }`}
           >
             {displayName}
@@ -391,14 +375,12 @@ function ThreadListItem({
         </div>
         {lastMessage && (
           <p className="text-[11px] text-slate-500 truncate mt-0.5">
-            <span className="text-slate-400">{lastMessage.senderName}:</span>{" "}
+            <span className="text-slate-400">{lastMessage.senderName}:</span>{' '}
             {truncate(lastMessage.content, 40)}
           </p>
         )}
         {!lastMessage && (
-          <p className="text-[11px] text-slate-600 italic mt-0.5">
-            No messages yet
-          </p>
+          <p className="text-[11px] text-slate-600 italic mt-0.5">No messages yet</p>
         )}
       </div>
     </button>
@@ -418,7 +400,7 @@ function MessageBubble({
   return (
     <div
       className={`flex flex-col gap-0.5 mb-3 animate-in slide-in-from-bottom-2 fade-in duration-300 ${
-        isOwn ? "items-end" : "items-start"
+        isOwn ? 'items-end' : 'items-start'
       }`}
     >
       {/* Sender name for group chats, or for AI messages */}
@@ -432,7 +414,7 @@ function MessageBubble({
           )}
           <span
             className={`text-[10px] font-bold uppercase tracking-wider ${
-              isOwn ? "text-amber-500/70" : "text-slate-500"
+              isOwn ? 'text-amber-500/70' : 'text-slate-500'
             }`}
           >
             {message.senderName}
@@ -444,7 +426,7 @@ function MessageBubble({
       <div
         className={`max-w-[85%] px-3 py-2 rounded-lg text-[13px] leading-relaxed border ${
           isOwn
-            ? "bg-amber-900/40 border-amber-700/40 text-amber-100 rounded-br-sm"
+            ? 'bg-amber-900/40 border-amber-700/40 text-amber-100 rounded-br-sm'
             : `bg-slate-800/60 ${toneBorderColor(message.tone)} text-slate-200 rounded-bl-sm`
         }`}
       >
@@ -478,7 +460,7 @@ export default function DiplomacyChat({
   const [collapsed, setCollapsed] = useState(false);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [showNewChat, setShowNewChat] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -486,7 +468,7 @@ export default function DiplomacyChat({
   // ----- Derived -----
   const activeThread = useMemo(
     () => chatThreads.find((t) => t.id === activeThreadId) ?? null,
-    [chatThreads, activeThreadId],
+    [chatThreads, activeThreadId]
   );
 
   const sortedThreads = useMemo(() => {
@@ -499,12 +481,12 @@ export default function DiplomacyChat({
 
   const foreignNations = useMemo(
     () => getForeignNations(provinces, players, playerNationName),
-    [provinces, players, playerNationName],
+    [provinces, players, playerNationName]
   );
 
   const totalUnread = useMemo(
     () => chatThreads.reduce((sum, t) => sum + t.unreadCount, 0),
-    [chatThreads],
+    [chatThreads]
   );
 
   // Detect if the selected province on the map is a foreign nation
@@ -513,20 +495,19 @@ export default function DiplomacyChat({
     if (!selectedProvinceId) return null;
 
     const province = provinces.find((p) => p.id === selectedProvinceId);
-    if (!province || province.ownerId === "player") return null;
+    if (!province || province.ownerId === 'player') return null;
 
     // Use the owner's name if owned by AI, otherwise use province name as nation
     const owner = province.ownerId ? players[province.ownerId] : null;
     const nationName = owner?.name ?? (province.parentCountryName || province.name);
 
     // Skip generic/small regions
-    if (province.name.startsWith("Region") || province.name === "Antarctica") return null;
+    if (province.name.startsWith('Region') || province.name === 'Antarctica') return null;
 
     // Check if bilateral thread already exists
     const existingThread = chatThreads.find(
       (t) =>
-        t.type === "bilateral" &&
-        (t.participants.includes(nationName) || t.name === nationName),
+        t.type === 'bilateral' && (t.participants.includes(nationName) || t.name === nationName)
     );
 
     if (existingThread) return null;
@@ -555,15 +536,15 @@ export default function DiplomacyChat({
   useEffect(() => {
     if (activeThread) {
       requestAnimationFrame(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       });
     }
   }, [activeThread, activeThread?.messages.length]);
 
   // Auto-resize textarea
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+    if (textareaRef.current && textareaRef.current.value === inputValue) {
+      textareaRef.current.style.height = 'auto';
       const scrollH = textareaRef.current.scrollHeight;
       // Clamp between 1 line (~32px) and 3 lines (~72px)
       textareaRef.current.style.height = `${Math.min(scrollH, 72)}px`;
@@ -575,42 +556,40 @@ export default function DiplomacyChat({
   const handleSend = useCallback(() => {
     if (!activeThread || !inputValue.trim() || processing) return;
     onSendMessage(activeThread.id, inputValue.trim());
-    setInputValue("");
+    setInputValue('');
     // Reset textarea height
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
     }
   }, [activeThread, inputValue, processing, onSendMessage]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         handleSend();
       }
     },
-    [handleSend],
+    [handleSend]
   );
 
   const handleStartConversation = useCallback(
     (nationName: string) => {
-      onCreateThread("bilateral", [nationName]);
+      onCreateThread('bilateral', [nationName]);
       // Find thread once it is created (will appear next render).
       // For now, close suggestion and the parent will pass updated threads.
     },
-    [onCreateThread],
+    [onCreateThread]
   );
 
   // ----- Placeholder text -----
   const placeholderText = useMemo(() => {
-    if (!activeThread) return "Select a channel...";
-    if (activeThread.type === "group") {
-      return `Address ${activeThread.name || "the alliance"}...`;
+    if (!activeThread) return 'Select a channel...';
+    if (activeThread.type === 'group') {
+      return `Address ${activeThread.name || 'the alliance'}...`;
     }
-    const other = activeThread.participants.find(
-      (p) => p !== playerNationName,
-    );
-    return `Propose terms to ${other || "this nation"}...`;
+    const other = activeThread.participants.find((p) => p !== playerNationName);
+    return `Propose terms to ${other || 'this nation'}...`;
   }, [activeThread, playerNationName]);
 
   // ---------------------------------------------------------------------------
@@ -618,68 +597,67 @@ export default function DiplomacyChat({
   // ---------------------------------------------------------------------------
 
   return (
-    <div
-      className="campaign-diplomacy absolute top-20 right-4 z-30 flex flex-col font-mono w-80 max-h-[80vh]"
-    >
+    <div className="campaign-diplomacy absolute top-20 right-4 z-30 flex flex-col font-mono w-80 max-h-[80vh]">
       {/* ================================================================== */}
       {/* HEADER BAR                                                         */}
       {/* ================================================================== */}
-      <button
-        onClick={() => setCollapsed((c) => !c)}
+      <div
         className="w-full flex items-center justify-between px-4 py-3 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-t-xl hover:bg-slate-800/95 transition-colors select-none"
         style={collapsed ? { borderRadius: 12 } : undefined}
       >
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500">
-            Diplomatic Channels
-          </h2>
-          {totalUnread > 0 && (
-            <span className="bg-amber-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-              {totalUnread}
+        <h2 className="flex flex-1 self-stretch">
+          <button
+            type="button"
+            onClick={() => setCollapsed((c) => !c)}
+            className="flex flex-1 items-center gap-2 self-stretch text-left"
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500">
+              Diplomatic Channels
             </span>
-          )}
-        </div>
+            {totalUnread > 0 && (
+              <span className="bg-amber-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                {totalUnread}
+              </span>
+            )}
+          </button>
+        </h2>
         <div className="flex items-center gap-2">
           {/* New Chat Button */}
           {!collapsed && (
-            <span
-              role="button"
-              tabIndex={0}
+            <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowNewChat(true);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.stopPropagation();
-                  setShowNewChat(true);
-                }
               }}
               className="w-6 h-6 flex items-center justify-center rounded bg-slate-700 hover:bg-amber-700 text-slate-300 hover:text-white transition-colors text-sm leading-none"
               title="New Channel"
             >
               +
-            </span>
+            </button>
           )}
           {/* Collapse Chevron */}
-          <svg
-            className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
-              collapsed ? "" : "rotate-180"
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+          <button
+            type="button"
+            aria-label={collapsed ? 'Expand diplomatic channels' : 'Collapse diplomatic channels'}
+            onClick={() => setCollapsed((c) => !c)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+            <svg
+              aria-hidden="true"
+              className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                collapsed ? '' : 'rotate-180'
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
-      </button>
+      </div>
 
       {/* ================================================================== */}
       {/* COLLAPSIBLE BODY                                                   */}
@@ -690,7 +668,10 @@ export default function DiplomacyChat({
           {/* THREAD LIST (when no active thread)                             */}
           {/* -------------------------------------------------------------- */}
           {!activeThread ? (
-            <div className="flex flex-col overflow-hidden" style={{ maxHeight: "calc(80vh - 52px)" }}>
+            <div
+              className="flex flex-col overflow-hidden"
+              style={{ maxHeight: 'calc(80vh - 52px)' }}
+            >
               {/* Province suggestion banner */}
               {selectedProvinceSuggestion && (
                 <div className="px-3 py-2.5 bg-amber-900/20 border-b border-amber-800/40 flex items-center justify-between gap-2">
@@ -702,16 +683,12 @@ export default function DiplomacyChat({
                       }}
                     />
                     <span className="text-[11px] text-amber-300 truncate">
-                      Open channel with{" "}
-                      <strong>{selectedProvinceSuggestion.nationName}</strong>?
+                      Open channel with <strong>{selectedProvinceSuggestion.nationName}</strong>?
                     </span>
                   </div>
                   <button
-                    onClick={() =>
-                      handleStartConversation(
-                        selectedProvinceSuggestion.nationName,
-                      )
-                    }
+                    type="button"
+                    onClick={() => handleStartConversation(selectedProvinceSuggestion.nationName)}
                     className="shrink-0 text-[10px] font-bold uppercase bg-amber-700 hover:bg-amber-600 text-white px-2 py-1 rounded transition-colors"
                   >
                     Start
@@ -727,9 +704,8 @@ export default function DiplomacyChat({
                       No Active Channels
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed">
-                      Select a foreign nation on the map or press{" "}
-                      <span className="text-amber-500">[+]</span> to open a
-                      diplomatic channel.
+                      Select a foreign nation on the map or press{' '}
+                      <span className="text-amber-500">[+]</span> to open a diplomatic channel.
                     </p>
                   </div>
                 ) : (
@@ -750,57 +726,55 @@ export default function DiplomacyChat({
             /* ============================================================ */
             /* ACTIVE CHAT VIEW                                             */
             /* ============================================================ */
-            <div className="flex flex-col overflow-hidden" style={{ maxHeight: "calc(80vh - 52px)" }}>
+            <div
+              className="flex flex-col overflow-hidden"
+              style={{ maxHeight: 'calc(80vh - 52px)' }}
+            >
               {/* Chat Header */}
               <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-800/50 border-b border-slate-700 shrink-0">
                 <button
+                  type="button"
                   onClick={() => setActiveThreadId(null)}
                   className="text-slate-500 hover:text-slate-200 transition-colors shrink-0"
                   aria-label="Back to thread list"
                   title="Back"
                 >
                   <svg
+                    aria-hidden="true"
                     className="w-4 h-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     strokeWidth={2}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 19l-7-7 7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider truncate">
-                    {activeThread.type === "bilateral"
-                      ? activeThread.participants.find(
-                          (p) => p !== playerNationName,
-                        ) || activeThread.name
+                    {activeThread.type === 'bilateral'
+                      ? activeThread.participants.find((p) => p !== playerNationName) ||
+                        activeThread.name
                       : activeThread.name}
                   </h3>
                   <span className="text-[10px] text-slate-500">
-                    {activeThread.type === "group"
+                    {activeThread.type === 'group'
                       ? `${activeThread.participants.length} nations`
-                      : "Bilateral Channel"}
-                    {" \u00B7 "}
+                      : 'Bilateral Channel'}
+                    {' \u00B7 '}
                     {formatYear(currentYear)}
                   </span>
                 </div>
-                {activeThread.type === "group" && (
+                {activeThread.type === 'group' && (
                   <div className="shrink-0 flex -space-x-1.5">
                     {activeThread.participants.slice(0, 4).map((name) => {
-                      const matched = Object.values(players).find(
-                        (pl) => pl.name === name,
-                      );
+                      const matched = Object.values(players).find((pl) => pl.name === name);
                       return (
                         <div
                           key={name}
                           className="w-4 h-4 rounded-full border border-slate-700"
                           style={{
-                            backgroundColor: matched?.color ?? "#6b7280",
+                            backgroundColor: matched?.color ?? '#6b7280',
                           }}
                           title={name}
                         />
@@ -821,6 +795,7 @@ export default function DiplomacyChat({
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mb-3">
                       <svg
+                        aria-hidden="true"
                         className="w-5 h-5 text-slate-600"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -835,8 +810,7 @@ export default function DiplomacyChat({
                       </svg>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed max-w-[200px]">
-                      Begin diplomatic communications. Your tone will shape the
-                      relationship.
+                      Begin diplomatic communications. Your tone will shape the relationship.
                     </p>
                   </div>
                 )}
@@ -846,7 +820,7 @@ export default function DiplomacyChat({
                     key={msg.id}
                     message={msg}
                     isOwn={msg.senderName === playerNationName}
-                    isGroup={activeThread.type === "group"}
+                    isGroup={activeThread.type === 'group'}
                   />
                 ))}
 
@@ -868,6 +842,7 @@ export default function DiplomacyChat({
                     style={{ minHeight: 32, maxHeight: 72 }}
                   />
                   <button
+                    type="button"
                     onClick={handleSend}
                     disabled={!inputValue.trim() || processing}
                     className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-amber-700 hover:bg-amber-600 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-colors"
@@ -875,6 +850,7 @@ export default function DiplomacyChat({
                   >
                     {processing ? (
                       <svg
+                        aria-hidden="true"
                         className="w-4 h-4 animate-spin"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -895,6 +871,7 @@ export default function DiplomacyChat({
                       </svg>
                     ) : (
                       <svg
+                        aria-hidden="true"
                         className="w-4 h-4"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -915,13 +892,20 @@ export default function DiplomacyChat({
                 {processing && (
                   <div className="mt-1.5 flex items-center gap-1.5">
                     <div className="flex gap-0.5">
-                      <div className="w-1 h-1 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <div className="w-1 h-1 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <div className="w-1 h-1 rounded-full bg-amber-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <div
+                        className="w-1 h-1 rounded-full bg-amber-500 animate-bounce"
+                        style={{ animationDelay: '0ms' }}
+                      />
+                      <div
+                        className="w-1 h-1 rounded-full bg-amber-500 animate-bounce"
+                        style={{ animationDelay: '150ms' }}
+                      />
+                      <div
+                        className="w-1 h-1 rounded-full bg-amber-500 animate-bounce"
+                        style={{ animationDelay: '300ms' }}
+                      />
                     </div>
-                    <span className="text-[10px] text-amber-500/70">
-                      Awaiting response...
-                    </span>
+                    <span className="text-[10px] text-amber-500/70">Awaiting response...</span>
                   </div>
                 )}
               </div>

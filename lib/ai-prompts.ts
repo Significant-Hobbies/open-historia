@@ -1,7 +1,7 @@
 // Open Historia -- AI Prompt Templates
 // All prompts return strict JSON for deterministic parsing.
 
-import type { PromptOverrides } from "./prompt-overrides";
+import type { PromptOverrides } from './prompt-overrides';
 
 const DIFFICULTY_PROFILES: Record<string, string> = {
   Sandbox: `SANDBOX MODE — MAXIMUM PERMISSIVENESS: The player can do virtually ANYTHING. Accept all player actions as succeeding unless they are physically impossible (e.g. teleportation, magic in a non-magic setting). Do NOT reject, refuse, or fail player actions based on "realism" or "plausibility". Wars are won quickly. Diplomacy always works. The player's nation is exceptionally powerful and competent. Other nations are cooperative and easily persuaded. Treat this as a creative sandbox where the player is exploring "what if" scenarios. The only limit is basic internal consistency. Consequences should be mild and recoverable. NEVER say an action "fails" or is "rejected" — find a way to make it work narratively.`,
@@ -14,25 +14,41 @@ const DIFFICULTY_PROFILES: Record<string, string> = {
 function formatRelations(
   relations?: Array<{ nationA: string; nationB: string; type: string; treaties?: string[] }>
 ): string {
-  if (!relations || relations.length === 0) return "None.";
-  return relations.map((r) => {
-    const t = r.treaties?.length ? ` [${r.treaties.join(", ")}]` : "";
-    return `${r.nationA}<->${r.nationB}: ${r.type.toUpperCase()}${t}`;
-  }).join("; ");
+  if (!relations || relations.length === 0) return 'None.';
+  return relations
+    .map((r) => {
+      const t = r.treaties?.length ? ` [${r.treaties.join(', ')}]` : '';
+      return `${r.nationA}<->${r.nationB}: ${r.type.toUpperCase()}${t}`;
+    })
+    .join('; ');
 }
 
-function formatEvents(events?: Array<{ year: number; description: string; type?: string }>): string {
-  if (!events || events.length === 0) return "None.";
-  return events.map((e) => `[${e.year}] ${e.description}`).join("; ");
+function formatEvents(
+  events?: Array<{ year: number; description: string; type?: string }>
+): string {
+  if (!events || events.length === 0) return 'None.';
+  return events.map((e) => `[${e.year}] ${e.description}`).join('; ');
 }
 
-function formatHistory(history?: Array<{ type?: string; text?: string; content?: string }>): string {
-  if (!history || history.length === 0) return "None.";
-  return history.slice(-8).map((h) => `[${(h.type || "info").toUpperCase()}] ${h.text || h.content || ""}`).join("\n");
+function formatHistory(
+  history?: Array<{ type?: string; text?: string; content?: string }>
+): string {
+  if (!history || history.length === 0) return 'None.';
+  return history
+    .slice(-8)
+    .map((h) => `[${(h.type || 'info').toUpperCase()}] ${h.text || h.content || ''}`)
+    .join('\n');
 }
 
-function formatProvinces(provinces?: Array<{ name: string; ownerId: string | null; parentCountryName?: string; isSubNational?: boolean }>): string {
-  if (!provinces || provinces.length === 0) return "None.";
+function formatProvinces(
+  provinces?: Array<{
+    name: string;
+    ownerId: string | null;
+    parentCountryName?: string;
+    isSubNational?: boolean;
+  }>
+): string {
+  if (!provinces || provinces.length === 0) return 'None.';
   const grouped: Record<string, string[]> = {};
   for (const p of provinces.filter((p) => p.ownerId !== null)) {
     const o = p.ownerId!;
@@ -40,10 +56,12 @@ function formatProvinces(provinces?: Array<{ name: string; ownerId: string | nul
     grouped[o].push(p.name);
   }
   // Compress: if all sub-provinces of a country are owned by the same player, collapse
-  return Object.entries(grouped).map(([owner, names]) => {
-    const compressed = compressProvinceNames(names);
-    return `${owner}: ${compressed}`;
-  }).join("; ");
+  return Object.entries(grouped)
+    .map(([owner, names]) => {
+      const compressed = compressProvinceNames(names);
+      return `${owner}: ${compressed}`;
+    })
+    .join('; ');
 }
 
 /** Collapse sub-province lists like "Northeast (USA), Southeast (USA), ..." into "all of USA (9 regions)" */
@@ -69,21 +87,27 @@ function compressProvinceNames(names: string[]): string {
       parts.push(...regionNames);
     }
   }
-  return parts.join(", ");
+  return parts.join(', ');
 }
 
 function buildGeopoliticalContext(year: number): string {
-  if (year < 500) return `ANCIENT (pre-500 CE): Great empires (Rome/Byzantium, Persia, Han China, Maurya India, Egypt). City-states and tribal confederations. Power flows from river valleys, trade routes, and horse archers. Religion and governance inseparable. Dynastic marriages forge alliances, royal hostages guarantee treaties. Succession crises cause imperial collapse. Slavery is universal.`;
+  if (year < 500)
+    return `ANCIENT (pre-500 CE): Great empires (Rome/Byzantium, Persia, Han China, Maurya India, Egypt). City-states and tribal confederations. Power flows from river valleys, trade routes, and horse archers. Religion and governance inseparable. Dynastic marriages forge alliances, royal hostages guarantee treaties. Succession crises cause imperial collapse. Slavery is universal.`;
 
-  if (year < 1500) return `MEDIEVAL (500-1500): Feudal Europe (kings, vassals, serfs), Islamic Caliphates, Byzantine Empire, Chinese dynasties (Tang-Song-Yuan-Ming), Mongol Empire. Catholic Church as European superpower -- popes crown kings. Crusades reshape Mediterranean. Silk Road and Indian Ocean trade. Black Death kills 30-60% of Europe. Gunpowder spreading from China. Trade republics (Venice, Genoa, Hansa) wield economic power.`;
+  if (year < 1500)
+    return `MEDIEVAL (500-1500): Feudal Europe (kings, vassals, serfs), Islamic Caliphates, Byzantine Empire, Chinese dynasties (Tang-Song-Yuan-Ming), Mongol Empire. Catholic Church as European superpower -- popes crown kings. Crusades reshape Mediterranean. Silk Road and Indian Ocean trade. Black Death kills 30-60% of Europe. Gunpowder spreading from China. Trade republics (Venice, Genoa, Hansa) wield economic power.`;
 
-  if (year < 1800) return `EARLY MODERN (1500-1800): Absolutist monarchies (France, Spain, Austria, Russia). Ottoman Empire at zenith. Colonial empires carve up the Americas, Africa, Asia. Westphalian sovereignty (1648) creates modern state system. Balance of power doctrine -- alliances shift to prevent hegemony. Mercantilism: nations compete for gold, colonies, trade monopolies. Enlightenment challenges divine right. American (1776) and French (1789) revolutions upend the order. East India Companies as quasi-sovereign entities.`;
+  if (year < 1800)
+    return `EARLY MODERN (1500-1800): Absolutist monarchies (France, Spain, Austria, Russia). Ottoman Empire at zenith. Colonial empires carve up the Americas, Africa, Asia. Westphalian sovereignty (1648) creates modern state system. Balance of power doctrine -- alliances shift to prevent hegemony. Mercantilism: nations compete for gold, colonies, trade monopolies. Enlightenment challenges divine right. American (1776) and French (1789) revolutions upend the order. East India Companies as quasi-sovereign entities.`;
 
-  if (year < 1945) return `MODERN (1800-1945): Nation-states and nationalism as dominant force. Industrial warfare: railroads, machine guns, tanks, aircraft. Scramble for Africa. WWI (1914-18) collapses Ottoman, Austro-Hungarian, Russian, German empires. Interwar: Great Depression, fascism, communism. WWII (1939-45): 70-85M dead, Holocaust, atomic weapons. Alliance systems can drag the world into total war. Secret treaties undermine public diplomacy. Propaganda industrialized. Total war doctrine targets civilians.`;
+  if (year < 1945)
+    return `MODERN (1800-1945): Nation-states and nationalism as dominant force. Industrial warfare: railroads, machine guns, tanks, aircraft. Scramble for Africa. WWI (1914-18) collapses Ottoman, Austro-Hungarian, Russian, German empires. Interwar: Great Depression, fascism, communism. WWII (1939-45): 70-85M dead, Holocaust, atomic weapons. Alliance systems can drag the world into total war. Secret treaties undermine public diplomacy. Propaganda industrialized. Total war doctrine targets civilians.`;
 
-  if (year < 1991) return `COLD WAR (1945-1991): NATO vs Warsaw Pact. Nuclear deterrence (MAD). Proxy wars: Korea, Vietnam, Afghanistan, Angola. Decolonization creates dozens of new nations. Non-Aligned Movement. Sino-Soviet split. OPEC oil shocks. Space race. Nuclear powers: USA (1945), USSR (1949), UK (1952), France (1960), China (1964), India (1974). Cuban Missile Crisis nearly ends civilization. CIA/KGB covert operations reshape governments worldwide.`;
+  if (year < 1991)
+    return `COLD WAR (1945-1991): NATO vs Warsaw Pact. Nuclear deterrence (MAD). Proxy wars: Korea, Vietnam, Afghanistan, Angola. Decolonization creates dozens of new nations. Non-Aligned Movement. Sino-Soviet split. OPEC oil shocks. Space race. Nuclear powers: USA (1945), USSR (1949), UK (1952), France (1960), China (1964), India (1974). Cuban Missile Crisis nearly ends civilization. CIA/KGB covert operations reshape governments worldwide.`;
 
-  if (year <= 2025) return `CONTEMPORARY (1991-2025): US-China strategic competition (trade wars, tech decoupling, Pacific buildup). Russia-NATO confrontation (Ukraine invasion 2022, energy weaponization). EU 27 members, single market, Euro (Brexit 2020). BRICS+ expanding as Western counterweight. ASEAN hedging between US and China. Key flashpoints: Taiwan, Kashmir, Palestine/Israel, South China Sea, Korean Peninsula. Cyber/info warfare is primary conflict domain. Nuclear: US/Russia ~5500 each, UK ~225, France ~290, China ~350+, India/Pakistan ~170, NK ~50, Israel ~90 undeclared. Climate crisis as security multiplier. Sanctions and SWIFT exclusion as weapons.`;
+  if (year <= 2025)
+    return `CONTEMPORARY (1991-2025): US-China strategic competition (trade wars, tech decoupling, Pacific buildup). Russia-NATO confrontation (Ukraine invasion 2022, energy weaponization). EU 27 members, single market, Euro (Brexit 2020). BRICS+ expanding as Western counterweight. ASEAN hedging between US and China. Key flashpoints: Taiwan, Kashmir, Palestine/Israel, South China Sea, Korean Peninsula. Cyber/info warfare is primary conflict domain. Nuclear: US/Russia ~5500 each, UK ~225, France ~290, China ~350+, India/Pakistan ~170, NK ~50, Israel ~90 undeclared. Climate crisis as security multiplier. Sanctions and SWIFT exclusion as weapons.`;
 
   return `FUTURE (2025+): Multipolar disorder -- no single hegemon. AI revolution transforms economies and warfare. Climate migration displaces hundreds of millions. Space militarization and resource competition. Hypersonic weapons undermine missile defense. Autonomous weapons systems. Cyber attacks on critical infrastructure. De-dollarization via BRICS+ alternatives. Aging societies (Japan, Europe, China) vs. youth bulges (Africa, South Asia). Synthetic biology and bioweapons risk. No international AI governance framework.`;
 }
@@ -122,8 +146,18 @@ export function buildGameMasterPrompt(args: {
   completedStepIds?: string[];
   promptOverrides?: Partial<PromptOverrides>;
 }): string {
-  const { command, gameState, config, history, events, relations, provinceSummary, storySoFar, promptOverrides } = args;
-  const playerNation = gameState.players["player"]?.name ?? "Unknown";
+  const {
+    command,
+    gameState,
+    config,
+    history,
+    events,
+    relations,
+    provinceSummary,
+    storySoFar,
+    promptOverrides,
+  } = args;
+  const playerNation = gameState.players['player']?.name ?? 'Unknown';
 
   const overrides = {
     gameMasterPreamble: promptOverrides?.gameMasterPreamble ?? GM_DEFAULT_PREAMBLE,
@@ -132,15 +166,14 @@ export function buildGameMasterPrompt(args: {
 
   const storyBlock = storySoFar
     ? `STORY SO FAR (compressed history of this entire game — this is your primary memory):\n${storySoFar}`
-    : "STORY SO FAR: Game just started. No prior history.";
-
+    : 'STORY SO FAR: Game just started. No prior history.';
 
   return `${overrides.gameMasterPreamble}
 
 SCENARIO: ${config.scenario}
 ERA: ${buildGeopoliticalContext(gameState.turn)}
 YEAR: ${gameState.turn} | PLAYER: ${playerNation}
-${DIFFICULTY_PROFILES[config.difficulty] || DIFFICULTY_PROFILES["Realistic"]}
+${DIFFICULTY_PROFILES[config.difficulty] || DIFFICULTY_PROFILES['Realistic']}
 
 ${storyBlock}
 
@@ -182,19 +215,33 @@ export function buildDiplomacyPrompt(args: {
   recentEvents?: Array<{ year: number; description: string }>;
   promptOverrides?: Partial<PromptOverrides>;
 }): string {
-  const { playerNation, targetNation, message, chatHistory, gameContext, relations, recentEvents, promptOverrides } = args;
+  const {
+    playerNation,
+    targetNation,
+    message,
+    chatHistory,
+    gameContext,
+    relations,
+    recentEvents,
+    promptOverrides,
+  } = args;
 
-  const historyBlock = chatHistory.length > 0
-    ? chatHistory.map((m) => `[${m.turnYear}] ${m.sender}: ${m.content}`).join("\n")
-    : "First contact.";
+  const historyBlock =
+    chatHistory.length > 0
+      ? chatHistory.map((m) => `[${m.turnYear}] ${m.sender}: ${m.content}`).join('\n')
+      : 'First contact.';
 
-  const rel = relations ? `${relations.type.toUpperCase()}${relations.treaties.length ? ` | Treaties: ${relations.treaties.join(", ")}` : ""}` : "No prior relationship";
-  const evts = recentEvents?.length ? recentEvents.map((e) => `[${e.year}] ${e.description}`).join("; ") : "None";
+  const rel = relations
+    ? `${relations.type.toUpperCase()}${relations.treaties.length ? ` | Treaties: ${relations.treaties.join(', ')}` : ''}`
+    : 'No prior relationship';
+  const evts = recentEvents?.length
+    ? recentEvents.map((e) => `[${e.year}] ${e.description}`).join('; ')
+    : 'None';
 
   return `You ARE the leader of ${targetNation} speaking with ${playerNation}'s leader. Never break character or acknowledge being AI.
 
 Context: ${gameContext.scenario} | Year ${gameContext.year}
-${DIFFICULTY_PROFILES[gameContext.difficulty] || DIFFICULTY_PROFILES["Realistic"]}
+${DIFFICULTY_PROFILES[gameContext.difficulty] || DIFFICULTY_PROFILES['Realistic']}
 Relationship: ${rel}
 Recent events: ${evts}
 
@@ -224,11 +271,21 @@ export function buildAdvisorPrompt(args: {
   history?: Array<{ content: string; role: string }>;
   promptOverrides?: Partial<PromptOverrides>;
 }): string {
-  const { question, playerNation, gameContext, recentEvents, relations, history, promptOverrides } = args;
+  const { question, playerNation, gameContext, recentEvents, relations, history, promptOverrides } =
+    args;
 
-  const evts = recentEvents?.length ? recentEvents.map((e) => `[${e.year}] ${e.description}`).join("; ") : "None";
-  const rels = relations?.length ? relations.map((r) => `${r.nationA}<->${r.nationB}: ${r.type}`).join("; ") : "None";
-  const conv = history?.length ? history.slice(-6).map((h) => `[${h.role === "user" ? "RULER" : "ADVISOR"}] ${h.content}`).join("\n") : "New session.";
+  const evts = recentEvents?.length
+    ? recentEvents.map((e) => `[${e.year}] ${e.description}`).join('; ')
+    : 'None';
+  const rels = relations?.length
+    ? relations.map((r) => `${r.nationA}<->${r.nationB}: ${r.type}`).join('; ')
+    : 'None';
+  const conv = history?.length
+    ? history
+        .slice(-6)
+        .map((h) => `[${h.role === 'user' ? 'RULER' : 'ADVISOR'}] ${h.content}`)
+        .join('\n')
+    : 'New session.';
 
   return `${promptOverrides?.advisorPersonality ?? ADVISOR_DEFAULT}
 

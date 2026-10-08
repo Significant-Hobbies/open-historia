@@ -23,9 +23,18 @@
     "types": ["@cloudflare/workers-types"]
   },
   "include": [
-    "src/worker.ts", "src/worker/**/*.ts", "lib/db/**/*.ts", "lib/auth.ts", "lib/ai-prompts.ts",
-    "lib/llm-timeout.ts", "lib/local-ai.ts", "lib/rate-limit.ts", "lib/turn-parser.ts",
-    "lib/prompt-overrides.ts", "lib/worker-env.ts", "env.d.ts"
+    "src/worker.ts",
+    "src/worker/**/*.ts",
+    "lib/db/**/*.ts",
+    "lib/auth.ts",
+    "lib/ai-prompts.ts",
+    "lib/llm-timeout.ts",
+    "lib/local-ai.ts",
+    "lib/rate-limit.ts",
+    "lib/turn-parser.ts",
+    "lib/prompt-overrides.ts",
+    "lib/worker-env.ts",
+    "env.d.ts"
   ],
   "exclude": ["node_modules", "**/*.test.ts", "lib/**/__tests__/**"]
 }

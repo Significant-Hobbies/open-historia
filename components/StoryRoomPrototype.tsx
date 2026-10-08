@@ -1,12 +1,11 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   AI_PERSONAS,
   pickUnused,
   STORY_ROOM_PARTICIPANTS,
   STORY_ROOM_PROMPTS,
   suggestCoAuthorBranch,
-} from "@/lib/story-room-fixtures";
+} from '@/lib/story-room-fixtures';
 
 // ============================================================================
 // Story Room Prototype — v0.1 (StoryTunes branch archive + AI co-author)
@@ -15,7 +14,7 @@ import {
 // Playful ritual, deliberately not a document editor.
 // ============================================================================
 
-type Phase = "lobby" | "submit" | "vote" | "canon";
+type Phase = 'lobby' | 'submit' | 'vote' | 'canon';
 
 type Submission = {
   id: string;
@@ -45,31 +44,31 @@ function createId(): string {
 }
 
 function getVerdict(winnerVotes: number, totalVotes: number, numSubs: number): string {
-  if (numSubs <= 1) return "The only telling. The scribes were of one mind.";
+  if (numSubs <= 1) return 'The only telling. The scribes were of one mind.';
   const margin = winnerVotes - (totalVotes - winnerVotes);
   const share = winnerVotes / Math.max(1, totalVotes);
-  if (share >= 0.8) return "The hall roared as one. The canon was never in doubt.";
-  if (share >= 0.6) return "A clear voice carried the night. The scribes nodded.";
-  if (margin > 0) return "Narrowly carried. The hall was split but the winner emerged.";
-  return "A whisper of consensus. History is sometimes decided by the smallest margin.";
+  if (share >= 0.8) return 'The hall roared as one. The canon was never in doubt.';
+  if (share >= 0.6) return 'A clear voice carried the night. The scribes nodded.';
+  if (margin > 0) return 'Narrowly carried. The hall was split but the winner emerged.';
+  return 'A whisper of consensus. History is sometimes decided by the smallest margin.';
 }
 
 export default function StoryRoomPrototype() {
-  const [phase, setPhase] = useState<Phase>("lobby");
+  const [phase, setPhase] = useState<Phase>('lobby');
   const [promptId, setPromptId] = useState<string>(PROMPTS[0]!.id);
   const [aiEnabled, setAiEnabled] = useState<boolean>(true);
   const [personaId, setPersonaId] = useState<string>(AI_PERSONAS[0]!.id);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('');
   const [userVoteId, setUserVoteId] = useState<string | null>(null);
-  const [runningCanon, setRunningCanon] = useState<string[]>([]);
+  const [runningCanon, setRunningCanon] = useState<Submission[]>([]);
   const [round, setRound] = useState(1);
   const [lastCanonized, setLastCanonized] = useState<Submission | null>(null);
   const [lastApocrypha, setLastApocrypha] = useState<Submission[]>([]);
   const [branchArchive, setBranchArchive] = useState<ArchivedBranch[]>([]);
   const [replayingId, setReplayingId] = useState<string | null>(null);
   const [reviveNotice, setReviveNotice] = useState<string | null>(null);
-  const [lastVerdict, setLastVerdict] = useState("");
+  const [lastVerdict, setLastVerdict] = useState('');
   const [timer, setTimer] = useState(45);
   const [timerActive, setTimerActive] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState<{
@@ -84,7 +83,7 @@ export default function StoryRoomPrototype() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (timerActive && (phase === "submit" || phase === "vote") && timer > 0) {
+    if (timerActive && (phase === 'submit' || phase === 'vote') && timer > 0) {
       interval = setInterval(() => {
         setTimer((t) => t - 1);
       }, 1000);
@@ -103,11 +102,7 @@ export default function StoryRoomPrototype() {
     setTimerActive(false);
   }
 
-  function archiveRejected(
-    rejected: Submission[],
-    winner: Submission,
-    roundNum: number
-  ) {
+  function archiveRejected(rejected: Submission[], winner: Submission, roundNum: number) {
     const entries: ArchivedBranch[] = rejected.map((s) => ({
       id: createId(),
       round: roundNum,
@@ -121,13 +116,13 @@ export default function StoryRoomPrototype() {
   }
 
   function enterRoom() {
-    setPhase("submit");
+    setPhase('submit');
     setSubmissions([]);
-    setUserInput("");
+    setUserInput('');
     setUserVoteId(null);
     setLastCanonized(null);
     setLastApocrypha([]);
-    setLastVerdict("");
+    setLastVerdict('');
     setAiSuggestion(null);
     setReviveNotice(null);
     setReplayingId(null);
@@ -146,7 +141,7 @@ export default function StoryRoomPrototype() {
     };
 
     setSubmissions((prev) => [...prev, newSub]);
-    if (!textOverride) setUserInput("");
+    if (!textOverride) setUserInput('');
     setAiSuggestion(null);
   }
 
@@ -154,7 +149,7 @@ export default function StoryRoomPrototype() {
     const usedTexts = submissions.map((s) => s.text);
     const suggestion = suggestCoAuthorBranch(
       currentPrompt,
-      runningCanon,
+      runningCanon.map((entry) => entry.text),
       usedTexts,
       personaId
     );
@@ -206,12 +201,12 @@ export default function StoryRoomPrototype() {
   function advanceToVote() {
     if (submissions.length === 0) return;
     stopTimer();
-    setPhase("vote");
+    setPhase('vote');
     resetTimer(30);
   }
 
   function castVote(subId: string) {
-    if (phase !== "vote") return;
+    if (phase !== 'vote') return;
 
     setSubmissions((prev) => {
       let next = prev.map((s) => {
@@ -235,7 +230,7 @@ export default function StoryRoomPrototype() {
   }
 
   function simulateCrowd() {
-    if (phase !== "vote" || submissions.length === 0) return;
+    if (phase !== 'vote' || submissions.length === 0) return;
 
     setSubmissions((prev) => {
       if (prev.length === 0) return prev;
@@ -268,13 +263,13 @@ export default function StoryRoomPrototype() {
 
     const verdict = getVerdict(winner.votes, totalVotes, submissions.length);
 
-    setRunningCanon((prev) => [...prev, winner.text]);
+    setRunningCanon((prev) => [...prev, winner]);
     archiveRejected(apocrypha, winner, round);
 
     setLastCanonized(winner);
     setLastApocrypha(apocrypha);
     setLastVerdict(verdict);
-    setPhase("canon");
+    setPhase('canon');
   }
 
   function replayBranch(branchId: string) {
@@ -289,8 +284,8 @@ export default function StoryRoomPrototype() {
     );
     setReplayingId(null);
     setAiSuggestion(null);
-    if (phase === "canon" || phase === "lobby") {
-      setPhase("submit");
+    if (phase === 'canon' || phase === 'lobby') {
+      setPhase('submit');
       setSubmissions([]);
       setUserVoteId(null);
       resetTimer(45);
@@ -299,30 +294,30 @@ export default function StoryRoomPrototype() {
 
   function nextRound() {
     setSubmissions([]);
-    setUserInput("");
+    setUserInput('');
     setUserVoteId(null);
     setLastCanonized(null);
     setLastApocrypha([]);
-    setLastVerdict("");
+    setLastVerdict('');
     setAiSuggestion(null);
     setReviveNotice(null);
     setReplayingId(null);
     setRound((r) => r + 1);
-    setPhase("submit");
+    setPhase('submit');
     resetTimer(45);
   }
 
   function forgeNewLegend() {
     setSubmissions([]);
-    setUserInput("");
+    setUserInput('');
     setUserVoteId(null);
     setRunningCanon([]);
     setLastCanonized(null);
     setLastApocrypha([]);
     setBranchArchive([]);
-    setLastVerdict("");
+    setLastVerdict('');
     setRound(1);
-    setPhase("lobby");
+    setPhase('lobby');
     setAiSuggestion(null);
     setReviveNotice(null);
     setReplayingId(null);
@@ -331,7 +326,7 @@ export default function StoryRoomPrototype() {
   }
 
   function changePrompt(newId: string) {
-    if (phase !== "lobby") return;
+    if (phase !== 'lobby') return;
     setPromptId(newId);
   }
 
@@ -349,9 +344,9 @@ export default function StoryRoomPrototype() {
               PROTOTYPE v0.1 — LOCAL ONLY • BRANCH ARCHIVE
             </div>
             <div className="mt-1 text-[12px] leading-snug text-amber-100/90">
-              StoryTunes fit test: submit → vote → canon, rejected branches archived with replay
-              and revive, plus fixture-only AI co-author suggestions. No persistence, no paid APIs,
-              no connection to strategy saves.
+              StoryTunes fit test: submit → vote → canon, rejected branches archived with replay and
+              revive, plus fixture-only AI co-author suggestions. No persistence, no paid APIs, no
+              connection to strategy saves.
             </div>
             <div className="mt-1 text-[10px] text-amber-400/70">
               See <span className="underline">STORY-ROOMS.md</span> for placement note (stay in Open
@@ -388,9 +383,9 @@ export default function StoryRoomPrototype() {
             <span>✧</span> CANON SO FAR (the record grows)
           </div>
           <div className="space-y-2 text-emerald-100/90 text-[12px] leading-relaxed">
-            {runningCanon.map((line, i) => (
-              <div key={i} className="border-l-2 border-emerald-700/60 pl-3">
-                {line}
+            {runningCanon.map((entry) => (
+              <div key={entry.id} className="border-l-2 border-emerald-700/60 pl-3">
+                {entry.text}
               </div>
             ))}
           </div>
@@ -417,8 +412,8 @@ export default function StoryRoomPrototype() {
                   key={b.id}
                   className={`rounded border p-2.5 text-[12px] transition ${
                     isOpen
-                      ? "border-rose-500/60 bg-rose-950/25"
-                      : "border-rose-900/40 bg-rose-950/5"
+                      ? 'border-rose-500/60 bg-rose-950/25'
+                      : 'border-rose-900/40 bg-rose-950/5'
                   }`}
                 >
                   <div className="flex flex-wrap items-center gap-2 text-[10px] text-rose-400/70 mb-1">
@@ -426,7 +421,9 @@ export default function StoryRoomPrototype() {
                     <span className="text-slate-600">•</span>
                     <span>round {b.round}</span>
                     <span className="text-slate-600">•</span>
-                    <span>{b.votes} vote{b.votes === 1 ? "" : "s"}</span>
+                    <span>
+                      {b.votes} vote{b.votes === 1 ? '' : 's'}
+                    </span>
                     {b.isAI && <span className="text-sky-400/80">AI</span>}
                   </div>
                   <div className="text-rose-100/85 leading-snug line-clamp-2">{b.text}</div>
@@ -438,7 +435,7 @@ export default function StoryRoomPrototype() {
                       {b.text}
                       <div className="mt-2 text-[10px] text-slate-500 italic">
                         Canon instead chose: “{b.rejectedAgainst.slice(0, 80)}
-                        {b.rejectedAgainst.length > 80 ? "…" : ""}”
+                        {b.rejectedAgainst.length > 80 ? '…' : ''}”
                       </div>
                     </div>
                   )}
@@ -448,7 +445,7 @@ export default function StoryRoomPrototype() {
                       onClick={() => replayBranch(b.id)}
                       className="flex-1 rounded border border-rose-800/60 py-1 text-[10px] uppercase tracking-widest text-rose-300 hover:bg-rose-950/40"
                     >
-                      {isOpen ? "Close replay" : "Replay"}
+                      {isOpen ? 'Close replay' : 'Replay'}
                     </button>
                     <button
                       type="button"
@@ -465,7 +462,7 @@ export default function StoryRoomPrototype() {
         </div>
       )}
 
-      {replayingBranch && replayingId && phase !== "lobby" && (
+      {replayingBranch && replayingId && phase !== 'lobby' && (
         <div className="sr-only" aria-live="polite">
           Replaying branch from round {replayingBranch.round}
         </div>
@@ -477,7 +474,7 @@ export default function StoryRoomPrototype() {
         </div>
       )}
 
-      {phase === "lobby" && (
+      {phase === 'lobby' && (
         <div className="space-y-6">
           <div className="text-slate-300 text-[13px] leading-relaxed max-w-prose">
             A small hall of scribes and speculators. One prompt. Short offerings. A vote. A single
@@ -497,8 +494,8 @@ export default function StoryRoomPrototype() {
                   onClick={() => changePrompt(p.id)}
                   className={`text-left rounded-lg border px-3 py-2 transition ${
                     promptId === p.id
-                      ? "border-amber-500/70 bg-amber-950/30 text-amber-200"
-                      : "border-slate-800 hover:border-slate-700 text-slate-300"
+                      ? 'border-amber-500/70 bg-amber-950/30 text-amber-200'
+                      : 'border-slate-800 hover:border-slate-700 text-slate-300'
                   }`}
                 >
                   <div className="font-bold text-sm">{p.title}</div>
@@ -531,8 +528,8 @@ export default function StoryRoomPrototype() {
                       onClick={() => setPersonaId(p.id)}
                       className={`rounded-lg border px-2.5 py-1.5 text-left text-[11px] transition ${
                         personaId === p.id
-                          ? "border-sky-500/70 bg-sky-950/30 text-sky-200"
-                          : "border-slate-700 text-slate-400 hover:border-slate-600"
+                          ? 'border-sky-500/70 bg-sky-950/30 text-sky-200'
+                          : 'border-slate-700 text-slate-400 hover:border-slate-600'
                       }`}
                     >
                       <div className="font-bold">{p.name}</div>
@@ -558,7 +555,7 @@ export default function StoryRoomPrototype() {
         </div>
       )}
 
-      {phase === "submit" && (
+      {phase === 'submit' && (
         <div className="space-y-5">
           <div className="flex items-center justify-between rounded-lg border border-amber-900/40 bg-slate-950/60 px-3 py-2 text-xs">
             <div>
@@ -625,7 +622,7 @@ export default function StoryRoomPrototype() {
           <div>
             <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">
               <div>YOUR TELLING</div>
-              <div className={userInput.length > MAX_CHARS ? "text-rose-400" : ""}>
+              <div className={userInput.length > MAX_CHARS ? 'text-rose-400' : ''}>
                 {userInput.length}/{MAX_CHARS}
               </div>
             </div>
@@ -667,7 +664,7 @@ export default function StoryRoomPrototype() {
                     className="rounded border border-slate-800 bg-slate-950/60 p-2.5 text-[12px]"
                   >
                     <div className="flex items-center gap-2 text-[10px] text-slate-400 mb-1">
-                      <span className={s.isAI ? "text-sky-400" : ""}>{s.author}</span>
+                      <span className={s.isAI ? 'text-sky-400' : ''}>{s.author}</span>
                       {s.isAI && <span className="text-[9px] text-sky-500/70">AI CO-AUTHOR</span>}
                     </div>
                     <div className="text-slate-200 leading-snug">{s.text}</div>
@@ -690,7 +687,7 @@ export default function StoryRoomPrototype() {
         </div>
       )}
 
-      {phase === "vote" && (
+      {phase === 'vote' && (
         <div className="space-y-5">
           <div className="flex items-center justify-between rounded-lg border border-sky-900/40 bg-slate-950/60 px-3 py-2 text-xs">
             <div>
@@ -705,15 +702,15 @@ export default function StoryRoomPrototype() {
               return (
                 <div
                   key={s.id}
-                  className={`rounded-xl border p-3 transition ${isChosen ? "border-emerald-500/70 bg-emerald-950/10" : "border-slate-800 bg-slate-950/40"}`}
+                  className={`rounded-xl border p-3 transition ${isChosen ? 'border-emerald-500/70 bg-emerald-950/10' : 'border-slate-800 bg-slate-950/40'}`}
                 >
                   <div className="flex items-center justify-between text-[10px] mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className={s.isAI ? "text-sky-400" : "text-slate-400"}>{s.author}</span>
+                      <span className={s.isAI ? 'text-sky-400' : 'text-slate-400'}>{s.author}</span>
                       {s.isAI && <span className="text-[9px] text-sky-500/60">AI</span>}
                     </div>
                     <div className="font-mono text-emerald-400/80 tabular-nums">
-                      {s.votes} vote{s.votes === 1 ? "" : "s"}
+                      {s.votes} vote{s.votes === 1 ? '' : 's'}
                     </div>
                   </div>
                   <div className="text-slate-200 text-[13px] leading-snug mb-3">{s.text}</div>
@@ -722,11 +719,11 @@ export default function StoryRoomPrototype() {
                     onClick={() => castVote(s.id)}
                     className={`w-full rounded py-1.5 text-[10px] uppercase tracking-widest transition ${
                       isChosen
-                        ? "bg-emerald-500/90 text-emerald-950"
-                        : "border border-emerald-700/60 text-emerald-400 hover:bg-emerald-950/30"
+                        ? 'bg-emerald-500/90 text-emerald-950'
+                        : 'border border-emerald-700/60 text-emerald-400 hover:bg-emerald-950/30'
                     }`}
                   >
-                    {isChosen ? "You support this telling" : "Support this telling"}
+                    {isChosen ? 'You support this telling' : 'Support this telling'}
                   </button>
                 </div>
               );
@@ -753,10 +750,12 @@ export default function StoryRoomPrototype() {
         </div>
       )}
 
-      {phase === "canon" && lastCanonized && (
+      {phase === 'canon' && lastCanonized && (
         <div className="space-y-6">
           <div className="rounded-2xl border border-emerald-500/60 bg-emerald-950/10 p-4">
-            <div className="uppercase tracking-[3px] text-emerald-400 text-[10px] mb-1">CANONIZED</div>
+            <div className="uppercase tracking-[3px] text-emerald-400 text-[10px] mb-1">
+              CANONIZED
+            </div>
             <div className="font-serif text-lg text-emerald-100 leading-tight mb-2">
               {lastCanonized.text}
             </div>
@@ -809,8 +808,8 @@ export default function StoryRoomPrototype() {
 
       <div className="mt-10 border-t border-slate-800 pt-4 text-[10px] text-slate-600 flex items-center justify-between">
         <div>
-          Local prototype • {aiEnabled ? `${activePersona.name} on` : "AI off"} •{" "}
-          {branchArchive.length} archived branch{branchArchive.length === 1 ? "" : "es"}
+          Local prototype • {aiEnabled ? `${activePersona.name} on` : 'AI off'} •{' '}
+          {branchArchive.length} archived branch{branchArchive.length === 1 ? '' : 'es'}
         </div>
         <button
           type="button"

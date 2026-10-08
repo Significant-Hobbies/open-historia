@@ -1,7 +1,7 @@
-import type { DbEnv } from "./db";
+import type { DbEnv } from './db';
 
 export type WorkerEnv = {
-  DB: DbEnv["DB"];
+  DB: DbEnv['DB'];
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL: string;
   BETTER_AUTH_BASE_URL?: string;

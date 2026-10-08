@@ -1,4 +1,4 @@
-import type { DiplomaticRelation, GameEvent, TimelineSnapshot } from "@/lib/types";
+import type { DiplomaticRelation, GameEvent, TimelineSnapshot } from '@/lib/types';
 
 export interface ProvinceOwnerChange {
   provinceId: string;
@@ -20,23 +20,20 @@ export interface SnapshotDiff {
 }
 
 function relationKey(relation: DiplomaticRelation): string {
-  return [relation.nationA, relation.nationB].sort().join("::");
+  return [relation.nationA, relation.nationB].sort().join('::');
 }
 
 function relationLabel(relation: DiplomaticRelation): string {
-  return [relation.nationA, relation.nationB].sort().join(" <-> ");
+  return [relation.nationA, relation.nationB].sort().join(' <-> ');
 }
 
 export function diffTimelineSnapshots(
   before: TimelineSnapshot | null | undefined,
-  after: TimelineSnapshot,
+  after: TimelineSnapshot
 ): SnapshotDiff {
   const beforeOwners = before?.gameStateSlim.provinceOwners ?? {};
   const afterOwners = after.gameStateSlim.provinceOwners;
-  const provinceIds = new Set([
-    ...Object.keys(beforeOwners),
-    ...Object.keys(afterOwners),
-  ]);
+  const provinceIds = new Set([...Object.keys(beforeOwners), ...Object.keys(afterOwners)]);
 
   const ownerChanges: ProvinceOwnerChange[] = [];
   for (const provinceId of provinceIds) {
@@ -51,10 +48,10 @@ export function diffTimelineSnapshots(
   const newEvents = after.gameStateSlim.events.filter((event) => !beforeEventIds.has(event.id));
 
   const beforeRelations = new Map(
-    (before?.gameStateSlim.relations ?? []).map((relation) => [relationKey(relation), relation]),
+    (before?.gameStateSlim.relations ?? []).map((relation) => [relationKey(relation), relation])
   );
   const afterRelations = new Map(
-    after.gameStateSlim.relations.map((relation) => [relationKey(relation), relation]),
+    after.gameStateSlim.relations.map((relation) => [relationKey(relation), relation])
   );
   const relationKeys = new Set([...beforeRelations.keys(), ...afterRelations.keys()]);
   const relationChanges: RelationDiff[] = [];
@@ -73,16 +70,20 @@ export function diffTimelineSnapshots(
 
   const summary: string[] = [];
   if (ownerChanges.length > 0) {
-    summary.push(`${ownerChanges.length} province owner change${ownerChanges.length === 1 ? "" : "s"}`);
+    summary.push(
+      `${ownerChanges.length} province owner change${ownerChanges.length === 1 ? '' : 's'}`
+    );
   }
   if (newEvents.length > 0) {
-    summary.push(`${newEvents.length} new event${newEvents.length === 1 ? "" : "s"}`);
+    summary.push(`${newEvents.length} new event${newEvents.length === 1 ? '' : 's'}`);
   }
   if (relationChanges.length > 0) {
-    summary.push(`${relationChanges.length} relation change${relationChanges.length === 1 ? "" : "s"}`);
+    summary.push(
+      `${relationChanges.length} relation change${relationChanges.length === 1 ? '' : 's'}`
+    );
   }
   if (summary.length === 0) {
-    summary.push("No material state delta recorded");
+    summary.push('No material state delta recorded');
   }
 
   return {

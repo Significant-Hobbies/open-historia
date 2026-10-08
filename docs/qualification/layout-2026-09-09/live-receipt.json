@@ -237,17 +237,12 @@
   "assetParity": {
     "status": 200,
     "url": "https://historia.aliveville.com/play",
-    "actual": [
-      "/assets/app-DxSSGJvv.js"
-    ],
+    "actual": ["/assets/app-DxSSGJvv.js"],
     "expected": "/assets/app-DxSSGJvv.js"
   },
   "guestSaveReload": {
     "url": "https://historia.aliveville.com/play/36d96ec6-679a-4294-839c-5ed1d092cd90",
-    "viewports": [
-      390,
-      1280
-    ],
+    "viewports": [390, 1280],
     "savedViaUI": true,
     "reloaded": true,
     "timelineCount": 3,

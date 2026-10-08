@@ -1,26 +1,29 @@
+import { useCallback, useEffect, useState } from 'react';
 
-import { useCallback,useEffect, useState } from "react";
-
-import { authClient } from "@/lib/auth-client";
-import type {
-  LogEntry,
-  SavedGame} from "@/lib/game-storage";
+import { authClient } from '@/lib/auth-client';
+import type { LogEntry, SavedGame } from '@/lib/game-storage';
 import {
   deleteGame,
   listSavedGames,
   loadGame,
   restoreSavedGameState,
   setAuthenticated,
-} from "@/lib/game-storage";
-import { INITIAL_PLAYERS } from "@/lib/map-generator";
-import { GameConfig } from "@/lib/types";
-import type { DiplomaticRelation, GameEvent, GameState, MapTheme, Preset,Province } from "@/lib/types";
-import { loadWorldDataDetailed } from "@/lib/world-loader";
-import { getPresetById } from "@/lib/presets";
-
+} from '@/lib/game-storage';
+import { INITIAL_PLAYERS } from '@/lib/map-generator';
+import { GameConfig } from '@/lib/types';
+import type {
+  DiplomaticRelation,
+  GameEvent,
+  GameState,
+  MapTheme,
+  Preset,
+  Province,
+} from '@/lib/types';
+import { loadWorldDataDetailed } from '@/lib/world-loader';
+import { getPresetById } from '@/lib/presets';
 
 function uid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -37,19 +40,19 @@ export function useGameState(initialGameId?: string) {
   const [savedGames, setSavedGames] = useState<SavedGame[]>([]);
   const [savesLoading, setSavesLoading] = useState(false);
   const [worldLoadError, setWorldLoadError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [worldLoadRequest, setWorldLoadRequest] = useState({ load: loadWorldDataDetailed });
 
   const retryWorldLoad = useCallback(() => {
     setLoading(true);
     setWorldLoadError(null);
-    setReloadKey((k) => k + 1);
+    setWorldLoadRequest({ load: loadWorldDataDetailed });
   }, []);
 
   // Auth
   const { data: authSession } = authClient.useSession();
 
   const refreshSavedGames = useCallback(async () => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     setSavesLoading(true);
     try {
       const saves = await listSavedGames();
@@ -69,13 +72,13 @@ export function useGameState(initialGameId?: string) {
   // Initial data load + optional game restore from URL
   const [initialLogs, setInitialLogs] = useState<LogEntry[]>([]);
   const [initialEvents, setInitialEvents] = useState<GameEvent[]>([]);
-  const [initialStorySoFar, setInitialStorySoFar] = useState("");
+  const [initialStorySoFar, setInitialStorySoFar] = useState('');
   const [initialCompletedStepIds, setInitialCompletedStepIds] = useState<string[]>([]);
   const [initialGameIdLoaded, setInitialGameIdLoaded] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
-      const { provinces: data, error } = await loadWorldDataDetailed();
+      const { provinces: data, error } = await worldLoadRequest.load();
       setProvincesCache(data);
       setWorldLoadError(error);
       await refreshSavedGames();
@@ -92,14 +95,20 @@ export function useGameState(initialGameId?: string) {
           setRelations(restoredState.relations || []);
           setProvincesCache(restoredState.provinces);
           setInitialEvents(saved.events || []);
-          setInitialStorySoFar(saved.storySoFar || "");
-          setInitialCompletedStepIds(saved.completedStepIds || restoredState.completedStepIds || []);
+          setInitialStorySoFar(saved.storySoFar || '');
+          setInitialCompletedStepIds(
+            saved.completedStepIds || restoredState.completedStepIds || []
+          );
           setShowPresets(false);
           setInitialGameIdLoaded(initialGameId);
           const restoredLogs = saved.logs?.length ? saved.logs : [];
           setInitialLogs([
             ...restoredLogs,
-            { id: uid(), type: "success", text: `Resumed game from ${new Date(saved.timestamp).toLocaleString()}.` },
+            {
+              id: uid(),
+              type: 'success',
+              text: `Resumed game from ${new Date(saved.timestamp).toLocaleString()}.`,
+            },
           ]);
         }
       }
@@ -107,7 +116,7 @@ export function useGameState(initialGameId?: string) {
       setLoading(false);
     }
     load();
-  }, [refreshSavedGames, initialGameId, reloadKey]);
+  }, [refreshSavedGames, initialGameId, worldLoadRequest]);
 
   // Preset selection
   const handleSelectPreset = useCallback((preset: Preset) => {
@@ -132,24 +141,36 @@ export function useGameState(initialGameId?: string) {
   const handleStartGame = useCallback(
     (config: GameConfig) => {
       const gameId = uid();
-      window.history.replaceState(null, "", `/play/${encodeURIComponent(gameId)}`);
+      window.history.replaceState(null, '', `/play/${encodeURIComponent(gameId)}`);
 
       setGameConfig(config);
 
-      let theme: MapTheme = "classic";
+      let theme: MapTheme = 'classic';
       const s = config.scenario.toLowerCase();
-      if (s.includes("cyber") || s.includes("future") || s.includes("robot") || s.includes("neon")) {
-        theme = "cyberpunk";
-      } else if (
-        s.includes("rome") || s.includes("ancient") || s.includes("medieval") ||
-        s.includes("king") || s.includes("empire") || s.includes("kingdom")
+      if (
+        s.includes('cyber') ||
+        s.includes('future') ||
+        s.includes('robot') ||
+        s.includes('neon')
       ) {
-        theme = "parchment";
+        theme = 'cyberpunk';
       } else if (
-        s.includes("cold war") || s.includes("plan") || s.includes("blueprint") ||
-        s.includes("space") || s.includes("modern")
+        s.includes('rome') ||
+        s.includes('ancient') ||
+        s.includes('medieval') ||
+        s.includes('king') ||
+        s.includes('empire') ||
+        s.includes('kingdom')
       ) {
-        theme = "blueprint";
+        theme = 'parchment';
+      } else if (
+        s.includes('cold war') ||
+        s.includes('plan') ||
+        s.includes('blueprint') ||
+        s.includes('space') ||
+        s.includes('modern')
+      ) {
+        theme = 'blueprint';
       }
 
       const initialPlayers = Object.fromEntries(
@@ -159,11 +180,11 @@ export function useGameState(initialGameId?: string) {
 
       let provinces = provincesCache;
       if (nation) {
-        initialPlayers["player"].name = nation.parentCountryName || nation.name;
+        initialPlayers['player'].name = nation.parentCountryName || nation.name;
         const parentId = nation.parentCountryId || String(nation.id);
         provinces = provincesCache.map((p) => {
           const pParent = p.parentCountryId || String(p.id);
-          return pParent === parentId ? { ...p, ownerId: "player" } : p;
+          return pParent === parentId ? { ...p, ownerId: 'player' } : p;
         });
       }
 
@@ -198,7 +219,9 @@ export function useGameState(initialGameId?: string) {
 
   // Load saved game — returns restored data for the caller to apply
   const handleLoadSavedGame = useCallback(
-    async (saveId: string): Promise<{
+    async (
+      saveId: string
+    ): Promise<{
       config: GameConfig;
       state: GameState;
       provinces: Province[];
@@ -221,14 +244,14 @@ export function useGameState(initialGameId?: string) {
       }
       setGameState(restoredState);
       setShowPresets(false);
-      window.history.replaceState(null, "", `/play/${encodeURIComponent(saveId)}`);
+      window.history.replaceState(null, '', `/play/${encodeURIComponent(saveId)}`);
 
       return {
         config: saved.gameConfig,
         state: restoredState,
         provinces: restoredState.provinces,
         events: saved.events || [],
-        storySoFar: saved.storySoFar || "",
+        storySoFar: saved.storySoFar || '',
         completedStepIds: saved.completedStepIds || restoredState.completedStepIds || [],
         logs: saved.logs?.length ? saved.logs : [],
       };
