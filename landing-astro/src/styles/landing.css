@@ -504,13 +504,45 @@ body {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--oh-fg-dimmer);
+  color: var(--oh-fg-dim);
 }
 
 .oh-foot-rule {
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--oh-border), transparent);
+}
+
+fleet-footer-extension > .fleet-footer-navigation {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: none;
+  flex-wrap: wrap;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0.06em;
+}
+
+.fleet-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.fleet-footer-links a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--oh-fg-dim);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.fleet-footer-links a:hover,
+.fleet-footer-links a:focus-visible {
+  color: var(--oh-fg);
 }
 
 /* ── Responsive ───────────────────────────────────────────────────── */
@@ -536,6 +568,10 @@ body {
   .oh-foot-rule {
     width: 80px;
     flex: 0 0 auto;
+  }
+
+  fleet-footer-extension > .fleet-footer-navigation {
+    align-items: flex-start;
   }
 }
 
