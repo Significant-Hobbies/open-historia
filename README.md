@@ -1,3 +1,5 @@
+> **Moved.** This project now lives in [Web Playables](https://github.com/Significant-Hobbies/web-playables) at `networked-games/open-historia/` (merged in Significant-Hobbies/web-playables#22, from this repo at `84e83aa`). This repository is kept for history and is no longer developed.
+
 # Open Historia
 
 **Rewrite history through AI-powered grand strategy.**
